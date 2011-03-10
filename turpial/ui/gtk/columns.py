@@ -18,18 +18,18 @@ log = logging.getLogger('Gtk:Column')
 
 class GenericColumn(Gtk.VBox):
     def __init__(self, mainwin, label=''):
-        gobject.GObject.__init__(self, False)
+        gobject.GObject.__init__(self)
         
         self.mainwin = mainwin
         self.statuslist = StatusList(mainwin)
         self.waiting = CairoWaiting(mainwin)
-        self.walign = Gtk.Alignment.new(xalign=1, yalign=0.5)
+        self.walign = Gtk.Alignment.new(1, 0.5, 0, 0)
         self.walign.add(self.waiting)
         self.errorbox = ErrorBox()
         self.label = Gtk.Label(label=label)
         self.caption = label
         
-        self.connect('expose-event', self.error_show)
+        self.connect('draw', self.error_show)
         
     def error_show(self, widget, event):
         self.errorbox.show()
@@ -92,15 +92,15 @@ class StandardColumn(GenericColumn):
         self.mark_all.set_image(self.mainwin.load_image('action-mark-all.png'))
         self.mark_all.set_tooltip_text(_('Mark all as read'))
         
-        listsbox = Gtk.HBox(False)
-        listsbox.pack_start(self.mark_all, False, False)
-        listsbox.pack_start(self.listcombo, True, True)
-        listsbox.pack_start(self.refresh, False, False)
+        listsbox = Gtk.HBox()
+        listsbox.pack_start(self.mark_all, False, False, 0)
+        listsbox.pack_start(self.listcombo, True, True, 0)
+        listsbox.pack_start(self.refresh, False, False, 0)
         listsbox.pack_start(self.walign, False, False, 2)
         
-        self.pack_start(listsbox, False, False)
-        self.pack_start(self.errorbox, False, False)
-        self.pack_start(self.statuslist, True, True)
+        self.pack_start(listsbox, False, False, 0)
+        self.pack_start(self.errorbox, False, False, 0)
+        self.pack_start(self.statuslist, True, True, 0)
         
         self.refresh.connect('clicked', self.__manual_update)
         self.mark_all.connect('clicked', self.__mark_all_as_read)
@@ -199,8 +199,8 @@ class SingleColumn(GenericColumn):
         #self.errorbox.pack_start(self.lblerror, False, False, 2)
         #self.errorbox.pack_start(self.walign, False, False, 2)
         
-        self.pack_start(self.errorbox, False, False)
-        self.pack_start(self.statuslist, True, True)
+        self.pack_start(self.errorbox, False, False, 0)
+        self.pack_start(self.statuslist, True, True, 0)
         
 class SearchColumn(GenericColumn):
     def __init__(self, mainwin, label=''):
@@ -220,14 +220,14 @@ class SearchColumn(GenericColumn):
         except: 
             pass
         
-        inputbox = Gtk.HBox(False)
-        inputbox.pack_start(self.input_topics, True, True)
-        inputbox.pack_start(self.clearbtn, False, False)
+        inputbox = Gtk.HBox()
+        inputbox.pack_start(self.input_topics, True, True, 0)
+        inputbox.pack_start(self.clearbtn, False, False, 0)
         inputbox.pack_start(self.walign, False, False, 2)
         
-        self.pack_start(inputbox, False, False)
-        self.pack_start(self.errorbox, False, False)
-        self.pack_start(self.statuslist, True, True)
+        self.pack_start(inputbox, False, False, 0)
+        self.pack_start(self.errorbox, False, False, 0)
+        self.pack_start(self.statuslist, True, True, 0)
         
         self.clearbtn.connect('clicked', self.__clear)
         self.input_topics.connect('activate', self.__search_topic)

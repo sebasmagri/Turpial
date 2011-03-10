@@ -5,9 +5,7 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 20, 2009
 
-from gi.repository import Gdk
-from gi.repository import Gtk
-import gobject
+from gi.repository import Gdk, Gtk, GObject
 
 SPELLING = False
 try:
@@ -16,16 +14,13 @@ try:
 except:
     pass
 
-# from turpial.ui.gtk.waiting import CairoWaiting
-# from turpial.ui.gtk.friendwin import FriendsWin
-
-import pdb
-pdb.set_trace()
+from turpial.ui.gtk.waiting import CairoWaiting
+from turpial.ui.gtk.friendwin import FriendsWin
 
 class UpdateBox(Gtk.Window):
     def __init__(self, parent):
-        gobject.GObject.__init__(self)
-        
+        GObject.GObject.__init__(self)
+
         self.what = _('What is happening?')
         self.blocked = False
         self.mainwin = parent
@@ -61,16 +56,16 @@ class UpdateBox(Gtk.Window):
         scroll.set_shadow_type(Gtk.ShadowType.IN)
         scroll.add(self.update_text)
         
-        updatebox = Gtk.HBox(False)
+        updatebox = Gtk.HBox()
         updatebox.pack_start(scroll, True, True, 3)
         
         self.url = Gtk.Entry()
         self.btn_url = Gtk.Button(_('Shorten URL'))
         self.btn_url.set_tooltip_text(_('Shorten URL'))
         
-        tools = Gtk.HBox(False)
+        tools = Gtk.HBox()
         tools.pack_start(self.url, True, True, 3)
-        tools.pack_start(self.btn_url, False, False)
+        tools.pack_start(self.btn_url, False, False, 0)
         
         self.toolbox = Gtk.Expander()
         self.toolbox.set_label(_('Options'))
@@ -92,31 +87,31 @@ class UpdateBox(Gtk.Window):
         chk_short = Gtk.CheckButton(_('Autoshort URLs'))
         chk_short.set_sensitive(False)
         
-        top = Gtk.HBox(False)
+        top = Gtk.HBox()
         top.pack_start(self.label, True, True, 5)
         top.pack_start(self.num_chars, False, False, 5)
         
         self.waiting = CairoWaiting(parent)
         self.lblerror = Gtk.Label()
         self.lblerror.set_use_markup(True)
-        error_align = Gtk.Alignment.new(xalign=0.0)
+        error_align = Gtk.Alignment.new(0, 0, 0, 0)
         error_align.add(self.lblerror)
         
-        buttonbox = Gtk.HBox(False)
+        buttonbox = Gtk.HBox()
         #buttonbox.pack_start(chk_short, False, False, 0)
         buttonbox.pack_start(self.btn_frn, False, False, 0)
         buttonbox.pack_start(self.btn_clr, False, False, 0)
-        buttonbox.pack_start(Gtk.HSeparator(True, True, 0), False, False, 2)
+        buttonbox.pack_start(Gtk.HSeparator(), False, False, 2)
         buttonbox.pack_start(self.btn_upd, False, False, 0)
-        abuttonbox = Gtk.Alignment.new(1, 0.5)
+        abuttonbox = Gtk.Alignment.new(1, 0.5, 0, 0)
         abuttonbox.add(buttonbox)
         
-        # bottom = Gtk.HBox(False)
-        # bottom.pack_start(self.waiting, False, False, 5)
-        # bottom.pack_start(error_align, True, True, 4)
-        # bottom.pack_start(abuttonbox, True, True, 5)
+        bottom = Gtk.HBox()
+        bottom.pack_start(self.waiting, False, False, 5)
+        bottom.pack_start(error_align, True, True, 4)
+        bottom.pack_start(abuttonbox, True, True, 5)
         
-        vbox = Gtk.VBox(False)
+        vbox = Gtk.VBox()
         vbox.pack_start(top, False, False, 2)
         vbox.pack_start(updatebox, True, True, 2)
         # vbox.pack_start(bottom, False, False, 2)
@@ -312,10 +307,10 @@ class UpdateBox(Gtk.Window):
 class MessageTextView(Gtk.TextView):
     '''Class for the message textview (where user writes new messages)
     for chat/groupchat windows'''
-    __gsignals__ = dict(mykeypress=(gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION, None, (int, Gdk.ModifierType)))
+    __gsignals__ = dict(mykeypress=(GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION, None, (int, Gdk.ModifierType)))
         
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.set_border_width(2)
         self.set_left_margin(2)
@@ -325,13 +320,13 @@ class MessageTextView(Gtk.TextView):
 
     def destroy(self):
         import gc
-        gobject.idle_add(lambda:gc.collect())
+        GObject.idle_add(lambda:gc.collect())
 
     def clear(self, widget=None):
         self.get_buffer().set_text('')
         
-if gobject.pygtk_version < (2, 8, 0):
-    gobject.type_register(MessageTextView)
+if GObject.pygtk_version < (2, 8, 0):
+    GObject.type_register(MessageTextView)
 
-Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Return, 0, 'mykeypress', int, Gdk.KEY_Return, Gdk.ModifierType, 0)
-Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Escape, 0, 'mykeypress', int, Gdk.KEY_Escape, Gdk.ModifierType, 0)
+# Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Return, 0, 'mykeypress', int, Gdk.KEY_Return, Gdk.ModifierType, 0)
+# Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Escape, 0, 'mykeypress', int, Gdk.KEY_Escape, Gdk.ModifierType, 0)

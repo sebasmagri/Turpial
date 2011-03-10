@@ -12,7 +12,7 @@ from turpial.ui.gtk.about import About
 
 class Dock(Gtk.Alignment):
     def __init__(self, parent, mode='single'):
-        gobject.GObject.__init__(self, 0.5, 0.5)
+        gobject.GObject.__init__(self)
         
         self.mainwin = parent
         
@@ -53,13 +53,13 @@ class Dock(Gtk.Alignment):
         self.btn_about.connect('clicked', self.__show_about)
         
         box = Gtk.HBox()
-        box.pack_start(self.btn_home, False, False)
-        box.pack_start(self.btn_profile, False, False)
-        box.pack_start(self.btn_follow, False, False)
-        box.pack_start(self.btn_update, False, False)
-        box.pack_start(self.btn_upload, False, False)
-        box.pack_start(self.btn_settings, False, False)
-        box.pack_start(self.btn_about, False, False)
+        box.pack_start(self.btn_home, False, False, 0)
+        box.pack_start(self.btn_profile, False, False, 0)
+        box.pack_start(self.btn_follow, False, False, 0)
+        box.pack_start(self.btn_update, False, False, 0)
+        box.pack_start(self.btn_upload, False, False, 0)
+        box.pack_start(self.btn_settings, False, False, 0)
+        box.pack_start(self.btn_about, False, False, 0)
         
         self.change_mode(mode)
         self.add(box)

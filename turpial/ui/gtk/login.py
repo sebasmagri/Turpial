@@ -5,9 +5,7 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 08, 2010
 
-import gobject
-from gi.repository import Gdk
-from gi.repository import Gtk
+from gi.repository import Gdk, GdkPixbuf, GObject, Gtk
 import base64
 
 from turpial.ui.gtk.loginlabel import LoginLabel
@@ -16,7 +14,7 @@ from turpial.config import PROTOCOLS
 
 class LoginBox(Gtk.VBox):
     def __init__(self, mainwin):
-        gobject.GObject.__init__(self, False, 5)
+        GObject.GObject.__init__(self)
         
         self.mainwin = mainwin
         avatar = self.mainwin.load_image('logo2.png')
@@ -44,7 +42,7 @@ class LoginBox(Gtk.VBox):
             t_icon = self.mainwin.load_image(image, True)
             list.append([t_icon, p, p])
         
-        self.combo_protocol = Gtk.ComboBox(list)
+        self.combo_protocol = Gtk.ComboBox.new_with_model(list)
         icon_cell = Gtk.CellRendererPixbuf()
         txt_cell = Gtk.CellRendererText()
         self.combo_protocol.pack_start(icon_cell,False)
@@ -57,15 +55,15 @@ class LoginBox(Gtk.VBox):
         self.btn_settings.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_settings.set_tooltip_text(_('Preferences'))
         self.btn_settings.set_image(self.mainwin.load_image('dock-settings.png'))
-        settings_box = Gtk.Alignment.new(xalign=1.0, yalign=0.5)
+        settings_box = Gtk.Alignment.new(1.0, 0.5, 0, 0)
         settings_box.set_padding(70, 10, 40, 40)
         settings_box.add(self.btn_settings)
         
         self.waiting = CairoWaiting(self.mainwin)
-        align = Gtk.Alignment.new(xalign=1, yalign=0.5)
+        align = Gtk.Alignment.new(1, 0.5, 0, 0)
         align.add(self.waiting)
         
-        hbox = Gtk.HBox(False)
+        hbox = Gtk.HBox()
         hbox.pack_start(lbl_user, False, False, 2)
         hbox.pack_start(align, True, True, 2)
         

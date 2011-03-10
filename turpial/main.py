@@ -32,7 +32,8 @@ try:
     UI_GTK = True
     INTERFACES.append('gtk')
     INTERFACES.append('gtk+')
-except ImportError:
+except ImportError, e:
+    print(e)
     UI_GTK = False
 
 class Turpial:

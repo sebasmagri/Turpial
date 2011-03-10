@@ -11,7 +11,7 @@ import gobject
 
 class ErrorBox(Gtk.HBox):
     def __init__(self, padding=0):
-        gobject.GObject.__init__(self, False)
+        gobject.GObject.__init__(self)
         
         self.timer = None
         
@@ -19,16 +19,16 @@ class ErrorBox(Gtk.HBox):
         self.message.set_use_markup(True)
         self.message.set_markup("")
         
-        lblalign = Gtk.Alignment.new(xalign=0, yalign=0.5)
+        lblalign = Gtk.Alignment.new(0, 0.5, 0, 0)
         lblalign.add(self.message)
         
-        ttcolor = Gdk.color_parse('#ebeab8')
+        ttcolor = Gdk.color_parse('#ebeab8')[1]
         errorevent = Gtk.EventBox()
         errorevent.add(lblalign)
         errorevent.modify_bg(Gtk.StateType.NORMAL, ttcolor)
         errorevent.set_border_width(1)
         
-        ttcolor = Gdk.color_parse('#a88f53')
+        ttcolor = Gdk.color_parse('#a88f53')[1]
         errorevent2 = Gtk.EventBox()
         errorevent2.add(errorevent)
         errorevent2.modify_bg(Gtk.StateType.NORMAL, ttcolor)
@@ -40,7 +40,7 @@ class ErrorBox(Gtk.HBox):
         #self.pack_start(self.btn_close, False, False, padding)
         
         errorevent.connect('button-release-event', self.close)
-        self.connect('expose-event', self.__show)
+        self.connect('draw', self.draw)
         
     def __show(self, widget=None, event=None):
         if self.message.get_label() == '':
@@ -48,7 +48,7 @@ class ErrorBox(Gtk.HBox):
         else:
             Gtk.HBox.show_all(self)
         
-    def show(self):
+    def draw(self):
         self.__show()
         
     def show_all(self):

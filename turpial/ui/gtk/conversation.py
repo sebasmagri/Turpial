@@ -26,13 +26,13 @@ class ConversationBox(Gtk.Window):
         
         self.tweets = SingleColumn(parent, _('In reply to...'))
         
-        top = Gtk.VBox(False, 0)
+        top = Gtk.VBox()
         top.pack_start(self.tweets, True, True, 0)
         
         self.add(top)
         
         self.connect('delete-event', self.__unclose)
-        self.connect('size-request', self.__size_request)
+        # self.connect('size-request', self.__size_request)
     
     def __size_request(self, widget, event, data=None):
         w, h = self.get_size()

@@ -5,10 +5,7 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 25, 2009
 
-from gi.repository import Gdk
-from gi.repository import Gtk
-from gi.repository import Pango
-import gobject
+from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango
 import logging
 
 from turpial.ui import util as util
@@ -20,7 +17,7 @@ FIELDS = 16
 
 class StatusList(Gtk.ScrolledWindow):
     def __init__(self, mainwin):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.IN)
         
@@ -33,7 +30,7 @@ class StatusList(Gtk.ScrolledWindow):
         self.list.set_events(Gdk.EventMask.POINTER_MOTION_MASK)
         self.list.set_level_indentation(0)
         #self.list.set_rules_hint(True)
-        self.list.set_resize_mode(Gtk.RESIZE_IMMEDIATE)
+        self.list.set_resize_mode(Gtk.ResizeMode.IMMEDIATE)
         
         self.model = Gtk.ListStore(
             GdkPixbuf.Pixbuf, # avatar
@@ -44,9 +41,9 @@ class StatusList(Gtk.ScrolledWindow):
             str, # real_message
             str, # id
             bool, # favorited?
-            gobject.TYPE_PYOBJECT, # in_reply_to_id
-            gobject.TYPE_PYOBJECT, # in_reply_to_user
-            gobject.TYPE_PYOBJECT, # retweeted_by
+            GObject.TYPE_PYOBJECT, # in_reply_to_id
+            GObject.TYPE_PYOBJECT, # in_reply_to_user
+            GObject.TYPE_PYOBJECT, # retweeted_by
             Gdk.Color, # color
             str, # update type
             str, # protocol
@@ -69,8 +66,8 @@ class StatusList(Gtk.ScrolledWindow):
         column.set_alignment(0.0)
         column.pack_start(cell_avatar, False)
         column.pack_start(self.cell_tweet, True)
-        column.set_attributes(self.cell_tweet, markup=4, cell_background_gdk=11)
-        column.set_attributes(cell_avatar, pixbuf=0, cell_background_gdk=11)
+        # column.set_properties(self.cell_tweet, markup=4, cell_background_gdk=11)
+        # column.set_properties(cell_avatar, pixbuf=0, cell_background_gdk=11)
         self.list.append_column(column)
         self.list.connect("button-release-event", self.__on_click)
         self.click_handler = self.list.connect("cursor-changed", self.__on_select)
@@ -195,11 +192,11 @@ class StatusList(Gtk.ScrolledWindow):
 
     def __build_pango_text(self, status):
         ''' Transform the regular text into pango markup '''
-        urls = [gobject.markup_escape_text(u) \
+        urls = [GObject.markup_escape_text(u) \
                 for u in util.detect_urls(status.text)]
         
         pango_twt = util.unescape_text(status.text)
-        pango_twt = gobject.markup_escape_text(pango_twt)
+        pango_twt = GObject.markup_escape_text(pango_twt)
         
         user = '<span size="9000" foreground="%s"><b>%s</b></span> ' % \
             (self.mainwin.link_color, status.username)

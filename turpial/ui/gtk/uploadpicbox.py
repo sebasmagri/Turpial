@@ -39,7 +39,7 @@ class UploadPicBox(Gtk.Window):
         #self.btn_pic = Gtk.Button(_('Click to select image'))
         self.btn_pic = Gtk.Button()
         self.btn_pic.set_size_request(250, 250)
-        pic_box = Gtk.VBox(False)
+        pic_box = Gtk.VBox()
         pic_box.pack_start(self.btn_pic, True, True, 0)
         
         self.label = Gtk.Label()
@@ -65,7 +65,7 @@ class UploadPicBox(Gtk.Window):
         scroll.set_shadow_type(Gtk.ShadowType.IN)
         scroll.add(self.update_text)
         
-        updatebox = Gtk.HBox(False)
+        updatebox = Gtk.HBox()
         updatebox.pack_start(scroll, True, True, 3)
         
         self.btn_clr = Gtk.Button()
@@ -81,30 +81,30 @@ class UploadPicBox(Gtk.Window):
         self.btn_upd = Gtk.Button(_('Upload'))
         self.btn_upd.set_tooltip_text(_('Update your status') + ' (Ctrl+T)')
         
-        top = Gtk.HBox(False)
+        top = Gtk.HBox()
         top.pack_start(self.label, True, True, 5)
         top.pack_start(self.num_chars, False, False, 5)
         
         self.waiting = CairoWaiting(parent)
         self.lblerror = Gtk.Label()
         self.lblerror.set_use_markup(True)
-        error_align = Gtk.Alignment.new(xalign=0.0)
+        error_align = Gtk.Alignment.new(0, 0, 0, 0)
         error_align.add(self.lblerror)
         
-        buttonbox = Gtk.HBox(False)
+        buttonbox = Gtk.HBox()
         buttonbox.pack_start(self.btn_frn, False, False, 0)
         buttonbox.pack_start(self.btn_clr, False, False, 0)
-        buttonbox.pack_start(Gtk.HSeparator(, True, True, 0), False, False, 2)
+        buttonbox.pack_start(Gtk.HSeparator(), False, False, 2)
         buttonbox.pack_start(self.btn_upd, False, False, 0)
-        abuttonbox = Gtk.Alignment.new(1, 0.5)
+        abuttonbox = Gtk.Alignment.new(1, 0.5, 0, 0)
         abuttonbox.add(buttonbox)
         
-        bottom = Gtk.HBox(False)
+        bottom = Gtk.HBox()
         bottom.pack_start(self.waiting, False, False, 5)
         bottom.pack_start(error_align, True, True, 4)
         #bottom.pack_start(abuttonbox, True, True, 5)
         
-        vbox = Gtk.VBox(False)
+        vbox = Gtk.VBox()
         vbox.pack_start(pic_box, False, False, 2)
         vbox.pack_start(top, False, False, 2)
         vbox.pack_start(updatebox, True, True, 2)
@@ -325,5 +325,5 @@ class MessageTextView(Gtk.TextView):
 if gobject.pygtk_version < (2, 8, 0):
     gobject.type_register(MessageTextView)
 
-Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Return, 0, 'mykeypress', int, Gdk.KEY_Return, Gdk.ModifierType, 0)
-Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Escape, 0, 'mykeypress', int, Gdk.KEY_Escape, Gdk.ModifierType, 0)
+# Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Return, 0, 'mykeypress', int, Gdk.KEY_Return, Gdk.ModifierType, 0)
+# Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Escape, 0, 'mykeypress', int, Gdk.KEY_Escape, Gdk.ModifierType, 0)

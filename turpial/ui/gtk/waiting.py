@@ -5,17 +5,15 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 20, 2009
 
-from gi.repository import Gtk
-import cairo
-import gobject
+from gi.repository import Gtk, GObject
 
 class CairoWaiting(Gtk.DrawingArea):
     def __init__(self, parent):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.par = parent
         self.active = False
         self.error = False
-        self.connect('expose-event', self.expose)
+        self.connect('draw', self.draw)
         self.set_size_request(16, 16)
         self.timer = None
         self.count = 1
@@ -23,31 +21,30 @@ class CairoWaiting(Gtk.DrawingArea):
     def start(self):
         self.active = True
         self.error = False
-        self.timer = gobject.timeout_add(30, self.update)
+        self.timer = GObject.timeout_add(30, self.update)
         self.queue_draw()
         
     def stop(self, error=False):
         self.active = error
         self.error = error
         self.queue_draw()
-        if self.timer is not None: gobject.source_remove(self.timer)
-        
-        
+        if self.timer is not None: GObject.source_remove(self.timer)
+
     def update(self):
         self.count += 1
         if self.count > 31: self.count = 1
         self.queue_draw()
         return True
         
-    def expose(self, widget, event):
-        cr = widget.window.cairo_create()
-        cr.set_line_width(0.8)
+    # http://git.gnome.org/browse/pygobject/tree/demos/gtk-demo/demos/drawingarea.py
+    def draw(self, widget, cairo_ctx, event):
+        cairo_ctx.set_line_width(0.8)
         rect = self.get_allocation()
+
+        cairo_ctx.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
+        cairo_ctx.clip()
         
-        cr.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
-        cr.clip()
-        
-        cr.rectangle(0, 0, rect.width, rect.height)
+        cairo_ctx.rectangle(0, 0, rect.width, rect.height)
         if not self.active: return
         
         if self.error:
@@ -56,9 +53,6 @@ class CairoWaiting(Gtk.DrawingArea):
             #img = 'wait2-%i.png' % (self.count + 1)
             img = 'wait%i.png' % (self.count + 1)
         pix = self.par.load_image(img, True)
-        cr.set_source_pixbuf(pix, 0, 0)
-        cr.paint()
+        cairo_ctx.set_source_pixbuf(pix, 0, 0)
+        cairo_ctx.paint()
         del pix
-        
-        #cr.text_path(self.error)
-        #cr.stroke()

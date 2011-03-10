@@ -60,8 +60,8 @@ class Wrapper(Gtk.VBox):
                 else:
                     self.wrapper.append_page(widget, Gtk.Label(label=widget.caption))
                 
-                self.wrapper.set_tab_label_packing(widget,
-                                                   True, True, Gtk.PACK_START)
+                # self.wrapper.set_tab_label_packing(widget,
+                #                                    True, True, Gtk.PACK_START)
 
         self.add(self.wrapper)
         self.show_all()

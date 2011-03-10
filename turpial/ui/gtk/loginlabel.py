@@ -5,23 +5,22 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 21, 2009
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 import cairo
-import gobject
 
 class LoginLabel(Gtk.DrawingArea):
     def __init__(self, parent):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.par = parent
         self.error = None
         self.active = False
         self.timer = None
-        self.connect('expose-event', self.expose)
+        self.connect('draw', self.expose)
         self.set_size_request(30, 25)
     
     def deactivate(self):
         #if self.timer:
-        #    gobject.source_remove(self.timer)
+        #    GObject.source_remove(self.timer)
         self.error = None
         self.active = False
         self.queue_draw()
@@ -30,8 +29,8 @@ class LoginLabel(Gtk.DrawingArea):
         self.error = error
         self.active = True
         #if self.timer:
-        #    gobject.source_remove(self.timer)
-        #self.timer = gobject.timeout_add(5000, self.deactivate)
+        #    GObject.source_remove(self.timer)
+        #self.timer = GObject.timeout_add(5000, self.deactivate)
         self.queue_draw()
         
     def expose(self, widget, event):

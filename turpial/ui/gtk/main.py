@@ -6,12 +6,11 @@
 # Nov 08, 2009
 
 import os
-from gi.repository import Gdk
-from gi.repository import Gtk
-Gtk.require_version('3.0')
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gdk, GdkPixbuf, Gtk, GObject
 import base64
 import logging
-import gobject
 import webbrowser
 
 from turpial.ui.gtk.updatebox import UpdateBox
@@ -39,11 +38,11 @@ Gdk.threads_init()
 log = logging.getLogger('Gtk')
 
 class Main(BaseGui, Gtk.Window):
-    __gsignals__ = dict(mykeypress=(gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION, None, (str,)))
+    __gsignals__ = dict(mykeypress=(GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION, None, (str,)))
 
     def __init__(self, controller, extend=False):
         BaseGui.__init__(self, controller)
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.extend = extend and extend_mode
         
@@ -54,9 +53,9 @@ class Main(BaseGui, Gtk.Window):
         self.current_height = 480
         self.set_icon(self.load_image('turpial.png', True))
         self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_gravity(Gdk.GRAVITY_STATIC)
+        self.set_gravity(Gdk.Gravity.STATIC)
         self.connect('delete-event', self.__close)
-        self.connect('size-request', self.size_request)
+        # self.connect('size-request', self.size_request)
         self.connect('configure-event', self.move_event)
         self.connect('key-press-event', self.__on_key_press)
         self.connect('focus-in-event', self.__on_focus)
@@ -64,7 +63,7 @@ class Main(BaseGui, Gtk.Window):
         
         self.mode = 0
         self.vbox = None
-        self.contentbox = Gtk.VBox(False)
+        self.contentbox = Gtk.VBox.new(False, 0)
         
         # Valores de config. por defecto
         self.showed = True
@@ -373,9 +372,9 @@ class Main(BaseGui, Gtk.Window):
             if config.read('Notifications', 'sound') == 'on':
                 self.sound.login()
         
-        gobject.timeout_add(6 * 60 * 1000, self.download_rates)
-        gobject.timeout_add(12 * 60 * 1000, self.download_favorites)
-        gobject.timeout_add(15 * 60 * 1000, self.download_friends)
+        GObject.timeout_add(6 * 60 * 1000, self.download_rates)
+        GObject.timeout_add(12 * 60 * 1000, self.download_favorites)
+        GObject.timeout_add(15 * 60 * 1000, self.download_friends)
         
     def set_lists(self, lists, viewed):
         self.columns_lists = lists
@@ -608,44 +607,44 @@ class Main(BaseGui, Gtk.Window):
         self.set_mode()
         
         if (self.home_interval != home_interval):
-            if self.home_timer: gobject.source_remove(self.home_timer)
+            if self.home_timer: GObject.source_remove(self.home_timer)
             self.home_interval = home_interval
-            self.home_timer = gobject.timeout_add(self.home_interval * 60 * 1000, self.download_column1)
+            self.home_timer = GObject.timeout_add(self.home_interval * 60 * 1000, self.download_column1)
             log.debug('--Creado timer de Timeline cada %i min' % self.home_interval)
             
         if (self.replies_interval != replies_interval):
-            if self.replies_timer: gobject.source_remove(self.replies_timer)
+            if self.replies_timer: GObject.source_remove(self.replies_timer)
             self.replies_interval = replies_interval
-            self.replies_timer = gobject.timeout_add(self.replies_interval * 60 * 1000, self.download_column2)
+            self.replies_timer = GObject.timeout_add(self.replies_interval * 60 * 1000, self.download_column2)
             log.debug('--Creado timer de Replies cada %i min' % self.replies_interval)
             
         if (self.directs_interval != directs_interval):
-            if self.directs_timer: gobject.source_remove(self.directs_timer)
+            if self.directs_timer: GObject.source_remove(self.directs_timer)
             self.directs_interval = directs_interval
-            self.directs_timer = gobject.timeout_add(self.directs_interval * 60 * 1000, self.download_column3)
+            self.directs_timer = GObject.timeout_add(self.directs_interval * 60 * 1000, self.download_column3)
             log.debug('--Creado timer de Directs cada %i min' % self.directs_interval)
             
         if thread: 
             Gdk.threads_leave()
+
+    # def size_request(self, widget, event, data=None):
+    #     """Callback when the window changes its sizes. We use it to set the
+    #     proper word-wrapping for the message column."""
+    #     if self.mode < 2: return
         
-    def size_request(self, widget, event, data=None):
-        """Callback when the window changes its sizes. We use it to set the
-        proper word-wrapping for the message column."""
-        if self.mode < 2: return
+    #     w, h = self.get_size()
         
-        w, h = self.get_size()
+    #     if self.workspace == 'wide':
+    #         if (w, h) == self.wide_win_size: return
+    #         self.wide_win_size = (w, h)
+    #         self.win_wide_pos = self.get_position()
+    #     else:
+    #         if (w, h) == self.single_win_size: return
+    #         self.single_win_size = (w, h)
+    #         self.win_single_pos = self.get_position()
         
-        if self.workspace == 'wide':
-            if (w, h) == self.wide_win_size: return
-            self.wide_win_size = (w, h)
-            self.win_wide_pos = self.get_position()
-        else:
-            if (w, h) == self.single_win_size: return
-            self.single_win_size = (w, h)
-            self.win_single_pos = self.get_position()
-        
-        self.contenido.update_wrap(w, self.workspace)
-        return
+    #     self.contenido.update_wrap(w, self.workspace)
+    #     return
     
     def move_event(self, widget, event):
         if self.workspace == 'wide':
