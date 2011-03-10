@@ -11,7 +11,7 @@ import logging
 log = logging.getLogger('Notify')
 
 try:
-    import pynotify
+    from gi.repository import Notify
     NOTIFY = True
 except ImportError:
     log.debug("pynotify is not installed")
@@ -43,13 +43,13 @@ class Notification:
             return
             
         if self.active and NOTIFY:
-            if pynotify.init("Turpial"):
+            if Notify.init("Turpial"):
                 if not icon:
                     iconpath = os.path.join(os.path.dirname(__file__), 'data', 
                         'pixmaps', 'turpial-notification.png')
                     icon = os.path.realpath(iconpath)
                 icon = "file://%s" % icon
-                notification = pynotify.Notification(title, message, icon)
+                notification = Notify.Notification(title, message, icon)
                 notification.show()
     
     def new_tweets(self, title, count, tobject, tweet, icon):

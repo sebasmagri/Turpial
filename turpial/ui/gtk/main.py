@@ -6,7 +6,9 @@
 # Nov 08, 2009
 
 import os
-import gtk
+from gi.repository import Gdk
+from gi.repository import Gtk
+Gtk.require_version('3.0')
 import base64
 import logging
 import gobject
@@ -32,16 +34,16 @@ try:
 except:
     extend_mode = False
 
-gtk.gdk.threads_init()
+Gdk.threads_init()
 
 log = logging.getLogger('Gtk')
 
-class Main(BaseGui, gtk.Window):
+class Main(BaseGui, Gtk.Window):
     __gsignals__ = dict(mykeypress=(gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION, None, (str,)))
 
     def __init__(self, controller, extend=False):
         BaseGui.__init__(self, controller)
-        gtk.Window.__init__(self)
+        gobject.GObject.__init__(self)
         
         self.extend = extend and extend_mode
         
@@ -51,8 +53,8 @@ class Main(BaseGui, gtk.Window):
         self.current_width = 320
         self.current_height = 480
         self.set_icon(self.load_image('turpial.png', True))
-        self.set_position(gtk.WIN_POS_CENTER)
-        self.set_gravity(gtk.gdk.GRAVITY_STATIC)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_gravity(Gdk.GRAVITY_STATIC)
         self.connect('delete-event', self.__close)
         self.connect('size-request', self.size_request)
         self.connect('configure-event', self.move_event)
@@ -62,7 +64,7 @@ class Main(BaseGui, gtk.Window):
         
         self.mode = 0
         self.vbox = None
-        self.contentbox = gtk.VBox(False)
+        self.contentbox = Gtk.VBox(False)
         
         # Valores de config. por defecto
         self.showed = True
@@ -99,10 +101,10 @@ class Main(BaseGui, gtk.Window):
         self.__create_trayicon()
         
     def __create_trayicon(self):
-        if gtk.check_version(2, 10, 0) is not None:
+        if Gtk.check_version(2, 10, 0) is not None:
             log.debug("Disabled Tray Icon. It needs PyGTK >= 2.10.0")
             return
-        self.tray = gtk.StatusIcon()
+        self.tray = Gtk.StatusIcon()
         self.tray.set_from_pixbuf(self.load_image('turpial-tray.png', True))
         self.tray.set_tooltip('Turpial')
         self.tray.connect("activate", self.__on_trayicon_click)
@@ -124,32 +126,32 @@ class Main(BaseGui, gtk.Window):
         self.tray.set_from_pixbuf(self.load_image('turpial-tray.png', True))
     
     def __on_key_press(self, widget, event):
-        keyname = gtk.gdk.keyval_name(event.keyval)
-        if (event.state & gtk.gdk.CONTROL_MASK) and keyname.lower() == 'n':
+        keyname = Gdk.keyval_name(event.keyval)
+        if (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 'n':
             self.show_update_box()
             return True
         return False
     
     def __on_change_state(self, widget, event, data=None):
-        if event.type != gtk.gdk.WINDOW_STATE:
+        if event.type != Gdk.WINDOW_STATE:
             return False
         
-        if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
+        if event.new_window_state == Gdk.WINDOW_STATE_ICONIFIED:
             self.win_state = 'minimized'
-        elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
+        elif event.new_window_state == Gdk.WINDOW_STATE_MAXIMIZED:
             self.win_state = 'maximized'
         elif event.new_window_state == 0:
             self.win_state = 'windowed'
         
     def __show_tray_menu(self, widget, button, activate_time):
-        menu = gtk.Menu()
-        tweet = gtk.MenuItem(_('Tweet'))
-        follow = gtk.MenuItem(_('Follow'))
-        exit = gtk.MenuItem(_('Exit'))
+        menu = Gtk.Menu()
+        tweet = Gtk.MenuItem(_('Tweet'))
+        follow = Gtk.MenuItem(_('Follow'))
+        exit = Gtk.MenuItem(_('Exit'))
         if self.mode == 2:
             menu.append(tweet)
             menu.append(follow)
-            menu.append(gtk.SeparatorMenuItem())
+            menu.append(Gtk.SeparatorMenuItem())
         menu.append(exit)
         
         exit.connect('activate', self.quit)
@@ -236,18 +238,18 @@ class Main(BaseGui, gtk.Window):
     def load_image(self, path, pixbuf=False):
         img_path = os.path.realpath(os.path.join(os.path.dirname(__file__),
             '..', '..', 'data', 'pixmaps', path))
-        pix = gtk.gdk.pixbuf_new_from_file(img_path)
+        pix = GdkPixbuf.Pixbuf.new_from_file(img_path)
         if pixbuf: return pix
-        avatar = gtk.Image()
+        avatar = Gtk.Image()
         avatar.set_from_pixbuf(pix)
         del pix
         return avatar
         
     def load_avatar(self, dir, path, image=False):
         img_path = os.path.join(dir, path)
-        pix = gtk.gdk.pixbuf_new_from_file(img_path)
+        pix = GdkPixbuf.Pixbuf.new_from_file(img_path)
         if not image: return pix
-        avatar = gtk.Image()
+        avatar = Gtk.Image()
         avatar.set_from_pixbuf(pix)
         del pix
         return avatar
@@ -256,7 +258,7 @@ class Main(BaseGui, gtk.Window):
         ext = pic[-3:].lower()
         fullname = os.path.join(self.imgdir, pic)
         
-        orig = gtk.gdk.pixbuf_new_from_file(fullname)
+        orig = GdkPixbuf.Pixbuf.new_from_file(fullname)
         pw, ph = orig.get_width(), orig.get_height()
         
         if pw >= ph:
@@ -268,7 +270,7 @@ class Main(BaseGui, gtk.Window):
             fh = util.AVATAR_SIZE
             fw = int(fh * ratio)
             
-        dest = orig.scale_simple(fw, fh, gtk.gdk.INTERP_BILINEAR)
+        dest = orig.scale_simple(fw, fh, GdkPixbuf.InterpType.BILINEAR)
         dest.save(fullname, 'png')
         
         del orig
@@ -296,17 +298,17 @@ class Main(BaseGui, gtk.Window):
         g = int(base_color[3:5], 16)
         b = int(base_color[5:7], 16)
         #return r, g, b
-        return gtk.gdk.Color(r * 257, g * 257, b * 257)
+        return Gdk.Color(r * 257, g * 257, b * 257)
 
     def quit(self, widget):
         self.__save_size()
         self.destroy()
         self.tray = None
-        gtk.main_quit()
+        Gtk.main_quit()
         self.request_signout()
         
     def main_loop(self):
-        gtk.main()
+        Gtk.main()
         
     def show_login(self):
 
@@ -327,14 +329,14 @@ class Main(BaseGui, gtk.Window):
         
         self.update_config(config, global_cfg, True)
         
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.contentbox.add(self.contenido)
         
-        self.statusbar = gtk.Statusbar()
+        self.statusbar = Gtk.Statusbar()
         self.statusbar.push(0, _('Wait a few seconds while I load everything...'))
         if (self.vbox is not None): self.remove(self.vbox)
         
-        self.vbox = gtk.VBox(False, 0)
+        self.vbox = Gtk.VBox(False, 0)
         self.vbox.pack_start(self.contentbox, True, True, 0)
         self.vbox.pack_start(self.dock, False, False, 0)
         self.vbox.pack_start(self.statusbar, False, False, 0)
@@ -364,7 +366,7 @@ class Main(BaseGui, gtk.Window):
         
         #if (self.win_pos[0] > 0 and self.win_pos[1] > 0):
         #    self.move(self.win_pos[0], self.win_pos[1])
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
         if config.read('Notifications', 'login') == 'on':
             self.notify.login(p.items)
@@ -424,7 +426,7 @@ class Main(BaseGui, gtk.Window):
         self.profile.search.start_update()
         
     def update_column1(self, tweets):
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         
         last = self.home.timeline.statuslist.last
         count = self.home.timeline.update_tweets(tweets)
@@ -435,11 +437,11 @@ class Main(BaseGui, gtk.Window):
         if self.updating[0] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
             
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         self.updating[0] = False
         
     def update_column2(self, tweets):
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         
         last = self.home.replies.statuslist.last
         count = self.home.replies.update_tweets(tweets)
@@ -450,11 +452,11 @@ class Main(BaseGui, gtk.Window):
         if self.updating[1] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
         
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         self.updating[1] = False
         
     def update_column3(self, tweets):
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         
         last = self.home.direct.statuslist.last
         count = self.home.direct.update_tweets(tweets)
@@ -465,37 +467,37 @@ class Main(BaseGui, gtk.Window):
         if self.updating[2] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
             
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         self.updating[2] = False
         
     def update_favorites(self, favs):
         log.debug(u'Actualizando favoritos')
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         #self.home.timeline.update_tweets(tweets)
         #self.home.replies.update_tweets(replies)
         self.profile.favorites.update_tweets(favs)
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_user_profile(self, profile):
         log.debug(u'Actualizando perfil del usuario')
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.profile.set_user_profile(profile)
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_follow(self, user, follow):
         self.notify.following(user, follow)
         
     def update_rate_limits(self, val):
         if val is None or val == []: return
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.statusbar.push(0, util.get_rates(val))
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_search(self, val):
         log.debug(u'Mostrando resultados de la búsqueda')
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.profile.search.update_tweets(val)
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_user_avatar(self, user, pic):
         self.home.timeline.update_user_pic(user, pic)
@@ -506,29 +508,29 @@ class Main(BaseGui, gtk.Window):
         self.profile.search.update_user_pic(user, pic)
         
     def update_in_reply_to(self, tweet):
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.replybox.update([tweet])
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_conversation(self, tweets):
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.replybox.update(tweets)
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
     def tweet_changed(self, timeline, replies, favs):
         log.debug(u'Tweet modificado')
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         log.debug(u'--Actualizando el timeline')
         self.home.timeline.update_tweets(timeline)
         log.debug(u'--Actualizando las replies')
         self.home.replies.update_tweets(replies)
         log.debug(u'--Actualizando favoritos')
         self.profile.favorites.update_tweets(favs)
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
     def tweet_done(self, tweets):
         log.debug(u'Actualizando nuevo tweet')
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         if tweets.type == 'status':
             if self.updatebox.get_property('visible'):
                 self.updatebox.release()
@@ -541,7 +543,7 @@ class Main(BaseGui, gtk.Window):
                 self.updatebox.release(tweets.errmsg)
             if self.uploadpic.get_property('visible'):
                 self.uploadpic.release()
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
         self.update_timeline(tweets)
         
@@ -598,7 +600,7 @@ class Main(BaseGui, gtk.Window):
             self.wide_win_size = (int(wide_size[0]), int(wide_size[1]))
             self.win_single_pos = (int(s_pos[0]), int(s_pos[1]))
             self.win_wide_pos = (int(w_pos[0]), int(w_pos[1]))
-            gtk.gdk.threads_enter()
+            Gdk.threads_enter()
         
         if self.workspace <> config.read('General', 'workspace'):
             self.workspace = config.read('General', 'workspace')
@@ -624,7 +626,7 @@ class Main(BaseGui, gtk.Window):
             log.debug('--Creado timer de Directs cada %i min' % self.directs_interval)
             
         if thread: 
-            gtk.gdk.threads_leave()
+            Gdk.threads_leave()
         
     def size_request(self, widget, event, data=None):
         """Callback when the window changes its sizes. We use it to set the

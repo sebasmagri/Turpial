@@ -5,42 +5,43 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 20, 2009
 
-import gtk
+import gobject
+from gi.repository import Gtk
 
 from turpial.ui.gtk.about import About
 
-class Dock(gtk.Alignment):
+class Dock(Gtk.Alignment):
     def __init__(self, parent, mode='single'):
-        gtk.Alignment.__init__(self, 0.5, 0.5)
+        gobject.GObject.__init__(self, 0.5, 0.5)
         
         self.mainwin = parent
         
-        self.btn_home = gtk.Button()
-        self.btn_home.set_relief(gtk.RELIEF_NONE)
+        self.btn_home = Gtk.Button()
+        self.btn_home.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_home.set_tooltip_text(_('Timeline, replies and others'))
         
-        self.btn_profile = gtk.Button()
-        self.btn_profile.set_relief(gtk.RELIEF_NONE)
+        self.btn_profile = Gtk.Button()
+        self.btn_profile.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_profile.set_tooltip_text(_('Profile, favorites, search'))
         
-        self.btn_follow = gtk.Button()
-        self.btn_follow.set_relief(gtk.RELIEF_NONE)
+        self.btn_follow = Gtk.Button()
+        self.btn_follow.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_follow.set_tooltip_text(_('Follow People'))
         
-        self.btn_update = gtk.Button()
-        self.btn_update.set_relief(gtk.RELIEF_NONE)
+        self.btn_update = Gtk.Button()
+        self.btn_update.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_update.set_tooltip_text(_('Update status'))
         
-        self.btn_upload = gtk.Button()
-        self.btn_upload.set_relief(gtk.RELIEF_NONE)
+        self.btn_upload = Gtk.Button()
+        self.btn_upload.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_upload.set_tooltip_text(_('Upload image'))
         
-        self.btn_settings = gtk.Button()
-        self.btn_settings.set_relief(gtk.RELIEF_NONE)
+        self.btn_settings = Gtk.Button()
+        self.btn_settings.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_settings.set_tooltip_text(_('Preferences'))
         
-        self.btn_about = gtk.Button()
-        self.btn_about.set_relief(gtk.RELIEF_NONE)
+        self.btn_about = Gtk.Button()
+        self.btn_about.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_about.set_tooltip_text(_('About Turpial'))
         
         self.btn_home.connect('clicked', self.mainwin.show_home)
@@ -51,7 +52,7 @@ class Dock(gtk.Alignment):
         self.btn_settings.connect('clicked', self.mainwin.show_preferences)
         self.btn_about.connect('clicked', self.__show_about)
         
-        box = gtk.HBox()
+        box = Gtk.HBox()
         box.pack_start(self.btn_home, False, False)
         box.pack_start(self.btn_profile, False, False)
         box.pack_start(self.btn_follow, False, False)

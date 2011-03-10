@@ -6,19 +6,20 @@
 # Dic 21, 2009
 
 import os
-import gtk
+from gi.repository import Gdk
+from gi.repository import Gtk
 
 class About:
     def __init__(self, parent=None):
-        about = gtk.AboutDialog()
-        about.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        about = Gtk.AboutDialog()
+        about.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         about.set_logo(parent.load_image('turpial.png', True))
         about.set_name('Turpial')
         about.set_version(parent.version)
         about.set_copyright('Copyright (C) 2009 - 2010 Wil Alvarez')
         about.set_comments(_('Microblogging client written in Python'))
         about.set_transient_for(parent)
-        about.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        about.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         about.set_website('http://turpial.org.ve')
         
         try:

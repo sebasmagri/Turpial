@@ -5,7 +5,8 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 25, 2010
 
-import gtk
+import gobject
+from gi.repository import Gtk
 import logging
 
 from turpial.ui import util as util
@@ -15,17 +16,17 @@ from turpial.ui.gtk.waiting import CairoWaiting
 
 log = logging.getLogger('Gtk:Column')
 
-class GenericColumn(gtk.VBox):
+class GenericColumn(Gtk.VBox):
     def __init__(self, mainwin, label=''):
-        gtk.VBox.__init__(self, False)
+        gobject.GObject.__init__(self, False)
         
         self.mainwin = mainwin
         self.statuslist = StatusList(mainwin)
         self.waiting = CairoWaiting(mainwin)
-        self.walign = gtk.Alignment(xalign=1, yalign=0.5)
+        self.walign = Gtk.Alignment.new(xalign=1, yalign=0.5)
         self.walign.add(self.waiting)
         self.errorbox = ErrorBox()
-        self.label = gtk.Label(label)
+        self.label = Gtk.Label(label=label)
         self.caption = label
         
         self.connect('expose-event', self.error_show)
@@ -76,22 +77,22 @@ class StandardColumn(GenericColumn):
         self.handler = None
         self.changing_col = False
         
-        model = gtk.ListStore(str, str)
-        cell = gtk.CellRendererText()
-        self.listcombo = gtk.ComboBox()
+        model = Gtk.ListStore(str, str)
+        cell = Gtk.CellRendererText()
+        self.listcombo = Gtk.ComboBox()
         self.listcombo.pack_start(cell, True)
         self.listcombo.add_attribute(cell, 'text', 1)
         self.listcombo.set_model(model)
         
-        self.refresh = gtk.Button()
+        self.refresh = Gtk.Button()
         self.refresh.set_image(self.mainwin.load_image('action-refresh.png'))
         self.refresh.set_tooltip_text(_('Manual Update'))
         
-        self.mark_all = gtk.Button()
+        self.mark_all = Gtk.Button()
         self.mark_all.set_image(self.mainwin.load_image('action-mark-all.png'))
         self.mark_all.set_tooltip_text(_('Mark all as read'))
         
-        listsbox = gtk.HBox(False)
+        listsbox = Gtk.HBox(False)
         listsbox.pack_start(self.mark_all, False, False)
         listsbox.pack_start(self.listcombo, True, True)
         listsbox.pack_start(self.refresh, False, False)
@@ -149,7 +150,7 @@ class StandardColumn(GenericColumn):
         self.listcombo.set_active(self.last_index)
         iter = self.listcombo.get_active_iter()
         self.caption = model.get_value(iter, 1)
-        self.label = gtk.Label(self.caption)
+        self.label = Gtk.Label(label=self.caption)
         self.handler = self.listcombo.connect('changed', self.__change_list)
         
     def set_combo_item(self, reset=False):
@@ -194,7 +195,7 @@ class SingleColumn(GenericColumn):
     def __init__(self, mainwin, label=''):
         GenericColumn.__init__(self, mainwin, label)
         
-        #self.errorbox = gtk.HBox(False)
+        #self.errorbox = Gtk.HBox(False)
         #self.errorbox.pack_start(self.lblerror, False, False, 2)
         #self.errorbox.pack_start(self.walign, False, False, 2)
         
@@ -205,21 +206,21 @@ class SearchColumn(GenericColumn):
     def __init__(self, mainwin, label=''):
         GenericColumn.__init__(self, mainwin, label)
         
-        self.input_topics = gtk.Entry()
-        self.clearbtn = gtk.Button()
+        self.input_topics = Gtk.Entry()
+        self.clearbtn = Gtk.Button()
         self.clearbtn.set_image(self.mainwin.load_image('action-clear.png'))
         self.clearbtn.set_tooltip_text(_('Clear results'))
-        #self.clearbtn.set_relief(gtk.RELIEF_NONE)
+        #self.clearbtn.set_relief(Gtk.ReliefStyle.NONE)
         try:
             #self.input_topics.set_property("primary-icon-stock", 
-            #                               gtk.STOCK_FIND)
+            #                               Gtk.STOCK_FIND)
             self.input_topics.set_property("secondary-icon-stock",
-                                           gtk.STOCK_FIND)
+                                           Gtk.STOCK_FIND)
             self.input_topics.connect("icon-press", self.__on_icon_press)
         except: 
             pass
         
-        inputbox = gtk.HBox(False)
+        inputbox = Gtk.HBox(False)
         inputbox.pack_start(self.input_topics, True, True)
         inputbox.pack_start(self.clearbtn, False, False)
         inputbox.pack_start(self.walign, False, False, 2)

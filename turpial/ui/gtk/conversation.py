@@ -5,26 +5,28 @@
 # Author: Wil Alvarez (aka Satanas)
 # Feb 02, 2010
 
-import gtk
+import gobject
+from gi.repository import Gdk
+from gi.repository import Gtk
 
 from turpial.ui.gtk.columns import SingleColumn
 
-class ConversationBox(gtk.Window):
+class ConversationBox(Gtk.Window):
     def __init__(self, parent):
-        gtk.Window.__init__(self)
+        gobject.GObject.__init__(self)
         
         self.working = True
         self.mainwin = parent
-        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_title(_('In reply to...'))
         self.set_resizable(False)
         self.set_size_request(400, 300)
         self.set_transient_for(parent)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         
         self.tweets = SingleColumn(parent, _('In reply to...'))
         
-        top = gtk.VBox(False, 0)
+        top = Gtk.VBox(False, 0)
         top.pack_start(self.tweets, True, True, 0)
         
         self.add(top)
@@ -45,7 +47,7 @@ class ConversationBox(gtk.Window):
         self.in_reply_id = twt_id
         self.in_reply_user = user
         self.set_title(_('In reply to %s') % user)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.tweets.clear()
         self.tweets.start_update()
         self.show_all()

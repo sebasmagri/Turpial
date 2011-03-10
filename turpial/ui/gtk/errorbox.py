@@ -5,35 +5,36 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 26, 2010
 
-import gtk
+from gi.repository import Gdk
+from gi.repository import Gtk
 import gobject
 
-class ErrorBox(gtk.HBox):
+class ErrorBox(Gtk.HBox):
     def __init__(self, padding=0):
-        gtk.HBox.__init__(self, False)
+        gobject.GObject.__init__(self, False)
         
         self.timer = None
         
-        self.message = gtk.Label()
+        self.message = Gtk.Label()
         self.message.set_use_markup(True)
         self.message.set_markup("")
         
-        lblalign = gtk.Alignment(xalign=0, yalign=0.5)
+        lblalign = Gtk.Alignment.new(xalign=0, yalign=0.5)
         lblalign.add(self.message)
         
-        ttcolor = gtk.gdk.color_parse('#ebeab8')
-        errorevent = gtk.EventBox()
+        ttcolor = Gdk.color_parse('#ebeab8')
+        errorevent = Gtk.EventBox()
         errorevent.add(lblalign)
-        errorevent.modify_bg(gtk.STATE_NORMAL, ttcolor)
+        errorevent.modify_bg(Gtk.StateType.NORMAL, ttcolor)
         errorevent.set_border_width(1)
         
-        ttcolor = gtk.gdk.color_parse('#a88f53')
-        errorevent2 = gtk.EventBox()
+        ttcolor = Gdk.color_parse('#a88f53')
+        errorevent2 = Gtk.EventBox()
         errorevent2.add(errorevent)
-        errorevent2.modify_bg(gtk.STATE_NORMAL, ttcolor)
+        errorevent2.modify_bg(Gtk.StateType.NORMAL, ttcolor)
         
-        self.btn_close = gtk.Button()
-        self.btn_close.set_relief(gtk.RELIEF_NONE)
+        self.btn_close = Gtk.Button()
+        self.btn_close.set_relief(Gtk.ReliefStyle.NONE)
         
         self.pack_start(errorevent2, True, True, padding)
         #self.pack_start(self.btn_close, False, False, padding)
@@ -45,7 +46,7 @@ class ErrorBox(gtk.HBox):
         if self.message.get_label() == '':
             self.hide()
         else:
-            gtk.HBox.show_all(self)
+            Gtk.HBox.show_all(self)
         
     def show(self):
         self.__show()
@@ -63,7 +64,7 @@ class ErrorBox(gtk.HBox):
         
     def hide(self):
         self.message.set_markup("")
-        gtk.HBox.hide(self)
+        Gtk.HBox.hide(self)
         
     def close(self, widget=None, event=None):
         self.hide()

@@ -5,8 +5,9 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 25, 2009
 
-import gtk
-import pango
+from gi.repository import Gdk
+from gi.repository import Gtk
+from gi.repository import Pango
 import gobject
 import logging
 
@@ -17,25 +18,25 @@ log = logging.getLogger('Gtk:Statuslist')
 
 FIELDS = 16
 
-class StatusList(gtk.ScrolledWindow):
+class StatusList(Gtk.ScrolledWindow):
     def __init__(self, mainwin):
-        gtk.ScrolledWindow.__init__(self)
-        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.set_shadow_type(gtk.SHADOW_IN)
+        gobject.GObject.__init__(self)
+        self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.set_shadow_type(Gtk.ShadowType.IN)
         
         self.last = None    # Last tweets updated
         self.mainwin = mainwin
         self.popup_menu = Menu(mainwin)
         
-        self.list = gtk.TreeView()
+        self.list = Gtk.TreeView()
         self.list.set_headers_visible(False)
-        self.list.set_events(gtk.gdk.POINTER_MOTION_MASK)
+        self.list.set_events(Gdk.EventMask.POINTER_MOTION_MASK)
         self.list.set_level_indentation(0)
         #self.list.set_rules_hint(True)
-        self.list.set_resize_mode(gtk.RESIZE_IMMEDIATE)
+        self.list.set_resize_mode(Gtk.RESIZE_IMMEDIATE)
         
-        self.model = gtk.ListStore(
-            gtk.gdk.Pixbuf, # avatar
+        self.model = Gtk.ListStore(
+            GdkPixbuf.Pixbuf, # avatar
             str, # username
             str, # datetime
             str, # client
@@ -46,7 +47,7 @@ class StatusList(gtk.ScrolledWindow):
             gobject.TYPE_PYOBJECT, # in_reply_to_id
             gobject.TYPE_PYOBJECT, # in_reply_to_user
             gobject.TYPE_PYOBJECT, # retweeted_by
-            gtk.gdk.Color, # color
+            Gdk.Color, # color
             str, # update type
             str, # protocol
             bool, # own status?
@@ -54,17 +55,17 @@ class StatusList(gtk.ScrolledWindow):
             str, #timestamp original
         ) # Editar FIELDS
         
-        self.model.set_sort_column_id(16, gtk.SORT_DESCENDING)
+        self.model.set_sort_column_id(16, Gtk.SortType.DESCENDING)
         self.list.set_model(self.model)
-        cell_avatar = gtk.CellRendererPixbuf()
+        cell_avatar = Gtk.CellRendererPixbuf()
         cell_avatar.set_property('yalign', 0)
-        self.cell_tweet = gtk.CellRendererText()
-        self.cell_tweet.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+        self.cell_tweet = Gtk.CellRendererText()
+        self.cell_tweet.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
         self.cell_tweet.set_property('wrap-width', 260)
         self.cell_tweet.set_property('yalign', 0)
         self.cell_tweet.set_property('xalign', 0)
         
-        column = gtk.TreeViewColumn('tweets')
+        column = Gtk.TreeViewColumn('tweets')
         column.set_alignment(0.0)
         column.pack_start(cell_avatar, False)
         column.pack_start(self.cell_tweet, True)
@@ -163,18 +164,18 @@ class StatusList(gtk.ScrolledWindow):
     
     def __get_background_color(self, fav, own, msg, new):
         ''' Returns the bg color for an update according it status '''
-        #naranja = gtk.gdk.Color(250 * 257, 241 * 257, 205 * 257)
-        #amarillo = gtk.gdk.Color(255 * 257, 251 * 257, 230 * 257)
-        #verde = gtk.gdk.Color(233 * 257, 247 * 257, 233 * 257)
-        #azul = gtk.gdk.Color(235 * 257, 242 * 257, 255 * 257)
+        #naranja = Gdk.Color(250 * 257, 241 * 257, 205 * 257)
+        #amarillo = Gdk.Color(255 * 257, 251 * 257, 230 * 257)
+        #verde = Gdk.Color(233 * 257, 247 * 257, 233 * 257)
+        #azul = Gdk.Color(235 * 257, 242 * 257, 255 * 257)
         '''
-        azul = gtk.gdk.Color(229 * 257, 236 * 257, 255 * 257)
-        rojo = gtk.gdk.Color(255 * 257, 229 * 257, 229 * 257)
-        morado = gtk.gdk.Color(238 * 257, 229 * 257, 255 * 257)
-        cyan = gtk.gdk.Color(229 * 257, 255 * 257, 253 * 257)
-        verde = gtk.gdk.Color(229 * 257, 255 * 257, 230 * 257)
-        amarillo = gtk.gdk.Color(253 * 257, 255 * 257, 229 * 257)
-        naranja = gtk.gdk.Color(255 * 257, 240 * 257, 229 * 257)
+        azul = Gdk.Color(229 * 257, 236 * 257, 255 * 257)
+        rojo = Gdk.Color(255 * 257, 229 * 257, 229 * 257)
+        morado = Gdk.Color(238 * 257, 229 * 257, 255 * 257)
+        cyan = Gdk.Color(229 * 257, 255 * 257, 253 * 257)
+        verde = Gdk.Color(229 * 257, 255 * 257, 230 * 257)
+        amarillo = Gdk.Color(253 * 257, 255 * 257, 229 * 257)
+        naranja = Gdk.Color(255 * 257, 240 * 257, 229 * 257)
         '''
         me = '@'+self.mainwin.me.lower()
         mention = True if msg.lower().find(me) >= 0 else False

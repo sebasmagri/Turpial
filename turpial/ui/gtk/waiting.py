@@ -5,13 +5,13 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 20, 2009
 
-import gtk
+from gi.repository import Gtk
 import cairo
 import gobject
 
-class CairoWaiting(gtk.DrawingArea):
+class CairoWaiting(Gtk.DrawingArea):
     def __init__(self, parent):
-        gtk.DrawingArea.__init__(self)
+        gobject.GObject.__init__(self)
         self.par = parent
         self.active = False
         self.error = False

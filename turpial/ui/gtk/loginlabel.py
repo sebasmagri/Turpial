@@ -5,13 +5,13 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 21, 2009
 
-import gtk
+from gi.repository import Gtk
 import cairo
 import gobject
 
-class LoginLabel(gtk.DrawingArea):
+class LoginLabel(Gtk.DrawingArea):
     def __init__(self, parent):
-        gtk.DrawingArea.__init__(self)
+        gobject.GObject.__init__(self)
         self.par = parent
         self.error = None
         self.active = False

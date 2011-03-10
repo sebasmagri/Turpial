@@ -5,78 +5,80 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 08, 2010
 
-import gtk
+import gobject
+from gi.repository import Gdk
+from gi.repository import Gtk
 import base64
 
 from turpial.ui.gtk.loginlabel import LoginLabel
 from turpial.ui.gtk.waiting import CairoWaiting
 from turpial.config import PROTOCOLS
 
-class LoginBox(gtk.VBox):
+class LoginBox(Gtk.VBox):
     def __init__(self, mainwin):
-        gtk.VBox.__init__(self, False, 5)
+        gobject.GObject.__init__(self, False, 5)
         
         self.mainwin = mainwin
         avatar = self.mainwin.load_image('logo2.png')
         self.message = LoginLabel(self)
         us, pw, rem = self.mainwin.request_remembered(0)
         
-        lbl_user = gtk.Label()
+        lbl_user = Gtk.Label()
         lbl_user.set_use_markup(True)
         lbl_user.set_markup(u'<span size="small">%s</span>' % _('User and Password'))
         lbl_user.set_alignment(0, 0.5)
         
-        self.username = gtk.Entry()
+        self.username = Gtk.Entry()
         self.username.set_text(us)
-        self.password = gtk.Entry()
+        self.password = Gtk.Entry()
         self.password.set_visibility(False)
         self.password.set_text(pw)
         
-        self.remember = gtk.CheckButton(_('Remember my credentials'))
+        self.remember = Gtk.CheckButton(_('Remember my credentials'))
         
-        self.btn_oauth = gtk.Button(_('Connect'))
+        self.btn_oauth = Gtk.Button(_('Connect'))
         
-        list = gtk.ListStore(gtk.gdk.Pixbuf, str, str)
+        list = Gtk.ListStore(GdkPixbuf.Pixbuf, str, str)
         for p in PROTOCOLS:
             image = '%s.png' % p
             t_icon = self.mainwin.load_image(image, True)
             list.append([t_icon, p, p])
         
-        self.combo_protocol = gtk.ComboBox(list)
-        icon_cell = gtk.CellRendererPixbuf()
-        txt_cell = gtk.CellRendererText()
+        self.combo_protocol = Gtk.ComboBox(list)
+        icon_cell = Gtk.CellRendererPixbuf()
+        txt_cell = Gtk.CellRendererText()
         self.combo_protocol.pack_start(icon_cell,False)
         self.combo_protocol.pack_start(txt_cell,False)
         self.combo_protocol.add_attribute(icon_cell,'pixbuf',0)
         self.combo_protocol.add_attribute(txt_cell,'markup',1)
         self.combo_protocol.set_active(0)
         
-        self.btn_settings = gtk.Button()
-        self.btn_settings.set_relief(gtk.RELIEF_NONE)
+        self.btn_settings = Gtk.Button()
+        self.btn_settings.set_relief(Gtk.ReliefStyle.NONE)
         self.btn_settings.set_tooltip_text(_('Preferences'))
         self.btn_settings.set_image(self.mainwin.load_image('dock-settings.png'))
-        settings_box = gtk.Alignment(xalign=1.0, yalign=0.5)
+        settings_box = Gtk.Alignment.new(xalign=1.0, yalign=0.5)
         settings_box.set_padding(70, 10, 40, 40)
         settings_box.add(self.btn_settings)
         
         self.waiting = CairoWaiting(self.mainwin)
-        align = gtk.Alignment(xalign=1, yalign=0.5)
+        align = Gtk.Alignment.new(xalign=1, yalign=0.5)
         align.add(self.waiting)
         
-        hbox = gtk.HBox(False)
+        hbox = Gtk.HBox(False)
         hbox.pack_start(lbl_user, False, False, 2)
         hbox.pack_start(align, True, True, 2)
         
-        table = gtk.Table(11, 1, False)
-        table.attach(avatar, 0, 1, 0, 1, gtk.FILL, gtk.FILL, 10, 50)
-        table.attach(self.message, 0, 1, 1, 2, gtk.EXPAND | gtk.FILL, gtk.FILL, 20, 3)
-        table.attach(hbox, 0, 1, 2, 3, gtk.EXPAND | gtk.FILL, gtk.FILL, 50, 0)
-        table.attach(self.username, 0, 1, 3, 4, gtk.EXPAND | gtk.FILL, gtk.FILL, 50, 0)
-        table.attach(self.password, 0, 1, 5, 6, gtk.EXPAND | gtk.FILL, gtk.FILL, 50, 0)
-        table.attach(self.combo_protocol, 0, 1, 7, 8, gtk.EXPAND, gtk.FILL, 0, 10)
-        table.attach(self.btn_oauth, 0, 1, 8, 9, gtk.EXPAND, gtk.FILL, 0, 3)
-        table.attach(self.remember, 0, 1, 9, 10, gtk.EXPAND, gtk.FILL, 0, 3)
-        table.attach(settings_box, 0, 1, 10, 11, gtk.EXPAND | gtk.FILL, gtk.EXPAND | gtk.FILL, 0, 10)
+        table = Gtk.Table(11, 1, False)
+        table.attach(avatar, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 10, 50)
+        table.attach(self.message, 0, 1, 1, 2, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 20, 3)
+        table.attach(hbox, 0, 1, 2, 3, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 50, 0)
+        table.attach(self.username, 0, 1, 3, 4, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 50, 0)
+        table.attach(self.password, 0, 1, 5, 6, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 50, 0)
+        table.attach(self.combo_protocol, 0, 1, 7, 8, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.FILL, 0, 10)
+        table.attach(self.btn_oauth, 0, 1, 8, 9, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.FILL, 0, 3)
+        table.attach(self.remember, 0, 1, 9, 10, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.FILL, 0, 3)
+        table.attach(settings_box, 0, 1, 10, 11, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, 0, 10)
         
         self.pack_start(table, False, False, 2)
         

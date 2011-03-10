@@ -5,110 +5,111 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 21, 2009
 
-import gtk
+import gobject
+from gi.repository import Gtk
 
 from turpial.ui.gtk.waiting import CairoWaiting
 
-class UserForm(gtk.VBox):
+class UserForm(Gtk.VBox):
     def __init__(self, mainwin, label='', profile=None):
-        gtk.VBox.__init__(self, False)
+        gobject.GObject.__init__(self, False)
         
         label_width = 75
         self.mainwin = mainwin
         self.user = None
-        self.label = gtk.Label(label)
+        self.label = Gtk.Label(label=label)
         self.caption = label
         
-        self.user_pic = gtk.Button()
+        self.user_pic = Gtk.Button()
         self.user_pic.set_size_request(60, 60)
-        pic_box = gtk.VBox(False)
+        pic_box = Gtk.VBox(False)
         pic_box.pack_start(self.user_pic, False, False, 10)
         
-        self.screen_name = gtk.Label()
+        self.screen_name = Gtk.Label()
         self.screen_name.set_alignment(0, 0.5)
-        self.tweets_count = gtk.Label()
+        self.tweets_count = Gtk.Label()
         self.tweets_count.set_alignment(0, 0.5)
         self.tweets_count.set_padding(8, 0)
-        self.following_count = gtk.Label()
+        self.following_count = Gtk.Label()
         self.following_count.set_alignment(0, 0.5)
         self.following_count.set_padding(8, 0)
-        self.followers_count = gtk.Label()
+        self.followers_count = Gtk.Label()
         self.followers_count.set_alignment(0, 0.5)
         self.followers_count.set_padding(8, 0)
         
-        info_box = gtk.VBox(False)
+        info_box = Gtk.VBox(False)
         info_box.pack_start(self.screen_name, False, False, 5)
         info_box.pack_start(self.tweets_count, False, False)
         info_box.pack_start(self.following_count, False, False)
         info_box.pack_start(self.followers_count, False, False)
         
-        top = gtk.HBox(False)
+        top = Gtk.HBox(False)
         top.pack_start(pic_box, False, False, 10)
         top.pack_start(info_box, False, False, 5)
         
-        self.real_name = gtk.Entry()
+        self.real_name = Gtk.Entry()
         self.real_name.set_max_length(20)
-        name_lbl = gtk.Label(_('Name'))
+        name_lbl = Gtk.Label(label=_('Name'))
         name_lbl.set_size_request(label_width, -1)
-        name_box = gtk.HBox(False)
+        name_box = Gtk.HBox(False)
         name_box.pack_start(name_lbl, False, False, 2)
         name_box.pack_start(self.real_name, True, True, 5)
         
-        self.location = gtk.Entry()
+        self.location = Gtk.Entry()
         self.location.set_max_length(30)
-        loc_lbl = gtk.Label(_('Location'))
+        loc_lbl = Gtk.Label(label=_('Location'))
         loc_lbl.set_size_request(label_width, -1)
-        loc_box = gtk.HBox(False)
+        loc_box = Gtk.HBox(False)
         loc_box.pack_start(loc_lbl, False, False, 2)
         loc_box.pack_start(self.location, True, True, 5)
         
-        self.url = gtk.Entry()
+        self.url = Gtk.Entry()
         self.url.set_max_length(100)
-        url_lbl = gtk.Label(_('URL'))
+        url_lbl = Gtk.Label(label=_('URL'))
         url_lbl.set_size_request(label_width, -1)
-        url_box = gtk.HBox(False)
+        url_box = Gtk.HBox(False)
         url_box.pack_start(url_lbl, False, False, 2)
         url_box.pack_start(self.url, True, True, 5)
         
-        self.bio = gtk.TextView()
-        self.bio.set_wrap_mode(gtk.WRAP_WORD)
-        scrollwin = gtk.ScrolledWindow()
-        scrollwin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_NEVER)
-        scrollwin.set_shadow_type(gtk.SHADOW_IN)
+        self.bio = Gtk.TextView()
+        self.bio.set_wrap_mode(Gtk.WrapMode.WORD)
+        scrollwin = Gtk.ScrolledWindow()
+        scrollwin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
+        scrollwin.set_shadow_type(Gtk.ShadowType.IN)
         scrollwin.set_size_request(-1, 80)
         scrollwin.add(self.bio)
-        bio_lbl = gtk.Label(_('Bio'))
+        bio_lbl = Gtk.Label(label=_('Bio'))
         bio_lbl.set_size_request(label_width, -1)
-        bio_box = gtk.HBox(False)
+        bio_box = Gtk.HBox(False)
         bio_box.pack_start(bio_lbl, False, False, 2)
         bio_box.pack_start(scrollwin, True, True, 5)
         
-        form = gtk.VBox(False)
+        form = Gtk.VBox(False)
         form.pack_start(name_box, False, False, 4)
         form.pack_start(loc_box, False, False, 4)
         form.pack_start(url_box, False, False, 4)
         form.pack_start(bio_box, False, False, 4)
         
-        self.submit = gtk.Button(_('Save'))
-        submit_box = gtk.Alignment(1.0, 0.5)
+        self.submit = Gtk.Button(_('Save'))
+        submit_box = Gtk.Alignment.new(1.0, 0.5)
         submit_box.set_property('right-padding', 5)
         submit_box.add(self.submit)
         
-        self.lblerror = gtk.Label()
+        self.lblerror = Gtk.Label()
         self.lblerror.set_use_markup(True)
         self.waiting = CairoWaiting(mainwin)
         
         self.lblerror.set_markup("Hola mundo")
         self.waiting.stop(True)
         
-        align = gtk.Alignment(xalign=1, yalign=0.5)
+        align = Gtk.Alignment.new(xalign=1, yalign=0.5)
         align.add(self.waiting)
         
-        bottombox = gtk.HBox(False)
+        bottombox = Gtk.HBox(False)
         bottombox.pack_start(self.lblerror, False, False, 2)
         bottombox.pack_start(align, True, True, 2)
         
-        spacebox = gtk.VBox(False)
+        spacebox = Gtk.VBox(False)
         
         self.pack_start(top, False, False)
         self.pack_start(form, False, False)
@@ -130,7 +131,7 @@ class UserForm(gtk.VBox):
         
         self.user = profile.username
         pix = self.mainwin.get_user_avatar(self.user, profile.avatar)
-        avatar = gtk.Image()
+        avatar = Gtk.Image()
         avatar.set_from_pixbuf(pix)
         self.user_pic.set_image(avatar)
         del pix

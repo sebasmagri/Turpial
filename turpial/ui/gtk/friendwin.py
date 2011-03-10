@@ -4,12 +4,13 @@
 #
 # Author: Wil Alvarez (aka Satanas)
 
-import gtk
+from gi.repository import Gdk
+from gi.repository import Gtk
 import gobject
 
-class FriendsWin(gtk.Window):
+class FriendsWin(Gtk.Window):
     def __init__(self, parent, callback, friends):
-        gtk.Window.__init__(self)
+        gobject.GObject.__init__(self)
         
         self.updatebox = parent
         self.set_title(_('Add friend'))
@@ -17,49 +18,49 @@ class FriendsWin(gtk.Window):
         self.set_transient_for(parent)
         self.set_resizable(False)
         self.set_modal(True)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         
         self.callback = callback
-        self.entry = gtk.Entry()
+        self.entry = Gtk.Entry()
         
-        self.model = gtk.ListStore(str)
-        self.model.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.model = Gtk.ListStore(str)
+        self.model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_line_wrap(True)
         label.set_use_markup(True)
-        label.set_justify(gtk.JUSTIFY_FILL)
+        label.set_justify(Gtk.Justification.FILL)
         label.set_width_chars(25)
         
-        align = gtk.Alignment(xalign=0.0, yalign=0.5)
+        align = Gtk.Alignment.new(xalign=0.0, yalign=0.5)
         align.set_padding(0, 5, 10, 10)
         align.add(label)
         
         self.modelfilter = self.model.filter_new()
         self.modelfilter.set_visible_func(self.__filter, self.entry)
         
-        self.list = gtk.TreeView()
+        self.list = Gtk.TreeView()
         self.list.set_headers_visible(False)
-        self.list.set_events(gtk.gdk.POINTER_MOTION_MASK)
+        self.list.set_events(Gdk.EventMask.POINTER_MOTION_MASK)
         self.list.set_level_indentation(0)
         self.list.set_rules_hint(True)
-        self.list.set_resize_mode(gtk.RESIZE_IMMEDIATE)
+        self.list.set_resize_mode(Gtk.RESIZE_IMMEDIATE)
         self.list.set_model(self.modelfilter)
         
-        self.cell_tweet = gtk.CellRendererText()
-        column = gtk.TreeViewColumn('friends')
+        self.cell_tweet = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn('friends')
         column.set_alignment(0.0)
         column.pack_start(self.cell_tweet, True)
         column.set_attributes(self.cell_tweet, markup=0)
         self.list.append_column(column)
         
-        scroll = gtk.ScrolledWindow()
-        scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        scroll.set_shadow_type(gtk.SHADOW_IN)
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_shadow_type(Gtk.ShadowType.IN)
         scroll.add(self.list)
         
-        hbox = gtk.HBox(False)
-        hbox2 = gtk.HBox(False)
+        hbox = Gtk.HBox(False)
+        hbox2 = Gtk.HBox(False)
         
         if friends is not None:
             for friend in friends:
@@ -69,20 +70,20 @@ class FriendsWin(gtk.Window):
                 hbox.pack_start(self.entry, True, True, 2)
                 hbox2.pack_start(scroll, True, True, 2)
                 
-                vbox = gtk.VBox(False)
+                vbox = Gtk.VBox(False)
                 vbox.pack_start(hbox, False, False, 1)
                 vbox.pack_start(hbox2, True, True, 1)
             elif len(friends) == 0:
                 label.set_markup('<span foreground="#920d12">%s</span>' % 
                 _('What? You don\'t have any friends. Try to go out and know \
 some nice people' ))
-                vbox = gtk.HBox(False)
+                vbox = Gtk.HBox(False)
                 vbox.pack_start(align, True, True, 2)
         else:
             label.set_markup('<span foreground="#920d12">%s</span>' % 
             _('I am still loading all of your friends. Try again in a few \
 seconds' ))
-            vbox = gtk.HBox(False)
+            vbox = Gtk.HBox(False)
             vbox.pack_start(align, True, True, 2)
         
         self.add(vbox)
@@ -96,7 +97,7 @@ seconds' ))
         self.entry.grab_focus()
         
     def __detect_shortcut(self, widget, event=None):
-        keyname = gtk.gdk.keyval_name(event.keyval)
+        keyname = Gdk.keyval_name(event.keyval)
         
         if keyname.lower() == 'escape':
             self.__close(widget)

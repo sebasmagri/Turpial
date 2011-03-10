@@ -5,16 +5,17 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 21, 2009
 
-import gtk
+import gobject
+from gi.repository import Gtk
 
 class WrapperAlign:
     left = 0
     middle = 1
     right = 2
     
-class Wrapper(gtk.VBox):
+class Wrapper(Gtk.VBox):
     def __init__(self):
-        gtk.VBox.__init__(self)
+        gobject.GObject.__init__(self)
         
         self.children = {
             WrapperAlign.left: None,
@@ -30,22 +31,22 @@ class Wrapper(gtk.VBox):
             self.remove(child)
         
         if mode == 'wide':
-            self.wrapper = gtk.HBox(True)
+            self.wrapper = Gtk.HBox(True)
             
             for i in range(3):
                 widget = self.children[i]
                 if widget is None:
                     continue
                 
-                box = gtk.VBox(False)
-                #box.pack_start(gtk.Label(widget.caption), False, False)
+                box = Gtk.VBox(False)
+                #box.pack_start(Gtk.Label(widget.caption, True, True, 0), False, False)
                 if widget.get_parent(): 
                     widget.reparent(box)
                 else:
                     box.pack_start(widget, True, True)
-                self.wrapper.pack_start(box)
+                self.wrapper.pack_start(box, True, True, 0)
         else:
-            self.wrapper = gtk.Notebook()
+            self.wrapper = Gtk.Notebook()
             
             for i in range(3):
                 widget = self.children[i]
@@ -55,12 +56,12 @@ class Wrapper(gtk.VBox):
                 if widget.get_parent(): 
                     widget.reparent(self.wrapper)
                     self.wrapper.set_tab_label(widget,
-                                               gtk.Label(widget.caption))
+                                               Gtk.Label(label=widget.caption))
                 else:
-                    self.wrapper.append_page(widget, gtk.Label(widget.caption))
+                    self.wrapper.append_page(widget, Gtk.Label(label=widget.caption))
                 
                 self.wrapper.set_tab_label_packing(widget,
-                                                   True, True, gtk.PACK_START)
+                                                   True, True, Gtk.PACK_START)
 
         self.add(self.wrapper)
         self.show_all()

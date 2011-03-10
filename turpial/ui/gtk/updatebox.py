@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
+1# -*- coding: utf-8 -*-
 
 """Widget para actualizar el estado del Turpial"""
 #
 # Author: Wil Alvarez (aka Satanas)
 # Dic 20, 2009
 
-import gtk
+from gi.repository import Gdk
+from gi.repository import Gtk
 import gobject
 
 SPELLING = False
@@ -15,33 +16,36 @@ try:
 except:
     pass
 
-from turpial.ui.gtk.waiting import CairoWaiting
-from turpial.ui.gtk.friendwin import FriendsWin
+# from turpial.ui.gtk.waiting import CairoWaiting
+# from turpial.ui.gtk.friendwin import FriendsWin
 
-class UpdateBox(gtk.Window):
+import pdb
+pdb.set_trace()
+
+class UpdateBox(Gtk.Window):
     def __init__(self, parent):
-        gtk.Window.__init__(self)
+        gobject.GObject.__init__(self)
         
         self.what = _('What is happening?')
         self.blocked = False
         self.mainwin = parent
-        #self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        #self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_title(_('Update status'))
         self.set_resizable(False)
         #self.set_default_size(500, 120)
         self.set_size_request(500, 150)
         self.set_transient_for(parent)
         #self.set_modal(True)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         
-        self.label = gtk.Label()
+        self.label = Gtk.Label()
         self.label.set_use_markup(True)
         self.label.set_alignment(0, 0.5)
         self.label.set_markup('<span size="medium"><b>%s</b></span>' % 
             self.what)
-        self.label.set_justify(gtk.JUSTIFY_LEFT)
+        self.label.set_justify(Gtk.Justification.LEFT)
         
-        self.num_chars = gtk.Label()
+        self.num_chars = Gtk.Label()
         self.num_chars.set_use_markup(True)
         self.num_chars.set_markup('<span size="14000" foreground="#999"><b>140</b></span>')
         
@@ -49,73 +53,73 @@ class UpdateBox(gtk.Window):
         self.update_text.set_border_width(2)
         self.update_text.set_left_margin(2)
         self.update_text.set_right_margin(2)
-        self.update_text.set_wrap_mode(gtk.WRAP_WORD)
+        self.update_text.set_wrap_mode(Gtk.WrapMode.WORD)
         buffer = self.update_text.get_buffer()
         
-        scroll = gtk.ScrolledWindow()
-        scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        scroll.set_shadow_type(gtk.SHADOW_IN)
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_shadow_type(Gtk.ShadowType.IN)
         scroll.add(self.update_text)
         
-        updatebox = gtk.HBox(False)
+        updatebox = Gtk.HBox(False)
         updatebox.pack_start(scroll, True, True, 3)
         
-        self.url = gtk.Entry()
-        self.btn_url = gtk.Button(_('Shorten URL'))
+        self.url = Gtk.Entry()
+        self.btn_url = Gtk.Button(_('Shorten URL'))
         self.btn_url.set_tooltip_text(_('Shorten URL'))
         
-        tools = gtk.HBox(False)
+        tools = Gtk.HBox(False)
         tools.pack_start(self.url, True, True, 3)
         tools.pack_start(self.btn_url, False, False)
         
-        self.toolbox = gtk.Expander()
+        self.toolbox = Gtk.Expander()
         self.toolbox.set_label(_('Options'))
         self.toolbox.set_expanded(False)
         self.toolbox.add(tools)
         
-        self.btn_clr = gtk.Button()
+        self.btn_clr = Gtk.Button()
         self.btn_clr.set_image(self.mainwin.load_image('action-clear.png'))
         self.btn_clr.set_tooltip_text(_('Clear all') + ' (Ctrl+L)')
-        self.btn_clr.set_relief(gtk.RELIEF_NONE)
+        self.btn_clr.set_relief(Gtk.ReliefStyle.NONE)
         
-        self.btn_frn = gtk.Button()
+        self.btn_frn = Gtk.Button()
         self.btn_frn.set_image(self.mainwin.load_image('action-add-friends.png'))
         self.btn_frn.set_tooltip_text(_('Add friends') + ' (Ctrl+F)')
-        self.btn_frn.set_relief(gtk.RELIEF_NONE)
+        self.btn_frn.set_relief(Gtk.ReliefStyle.NONE)
         
-        self.btn_upd = gtk.Button(_('Tweet'))
+        self.btn_upd = Gtk.Button(_('Tweet'))
         self.btn_upd.set_tooltip_text(_('Update your status') + ' (Ctrl+T)')
-        chk_short = gtk.CheckButton(_('Autoshort URLs'))
+        chk_short = Gtk.CheckButton(_('Autoshort URLs'))
         chk_short.set_sensitive(False)
         
-        top = gtk.HBox(False)
+        top = Gtk.HBox(False)
         top.pack_start(self.label, True, True, 5)
         top.pack_start(self.num_chars, False, False, 5)
         
         self.waiting = CairoWaiting(parent)
-        self.lblerror = gtk.Label()
+        self.lblerror = Gtk.Label()
         self.lblerror.set_use_markup(True)
-        error_align = gtk.Alignment(xalign=0.0)
+        error_align = Gtk.Alignment.new(xalign=0.0)
         error_align.add(self.lblerror)
         
-        buttonbox = gtk.HBox(False)
+        buttonbox = Gtk.HBox(False)
         #buttonbox.pack_start(chk_short, False, False, 0)
         buttonbox.pack_start(self.btn_frn, False, False, 0)
         buttonbox.pack_start(self.btn_clr, False, False, 0)
-        buttonbox.pack_start(gtk.HSeparator(), False, False, 2)
+        buttonbox.pack_start(Gtk.HSeparator(True, True, 0), False, False, 2)
         buttonbox.pack_start(self.btn_upd, False, False, 0)
-        abuttonbox = gtk.Alignment(1, 0.5)
+        abuttonbox = Gtk.Alignment.new(1, 0.5)
         abuttonbox.add(buttonbox)
         
-        bottom = gtk.HBox(False)
-        bottom.pack_start(self.waiting, False, False, 5)
-        bottom.pack_start(error_align, True, True, 4)
-        bottom.pack_start(abuttonbox, True, True, 5)
+        # bottom = Gtk.HBox(False)
+        # bottom.pack_start(self.waiting, False, False, 5)
+        # bottom.pack_start(error_align, True, True, 4)
+        # bottom.pack_start(abuttonbox, True, True, 5)
         
-        vbox = gtk.VBox(False)
+        vbox = Gtk.VBox(False)
         vbox.pack_start(top, False, False, 2)
         vbox.pack_start(updatebox, True, True, 2)
-        vbox.pack_start(bottom, False, False, 2)
+        # vbox.pack_start(bottom, False, False, 2)
         vbox.pack_start(self.toolbox, False, False, 2)
         
         self.add(vbox)
@@ -141,22 +145,22 @@ class UpdateBox(gtk.Window):
             print 'DEBUG:UI:Can\'t load gtkspell'
     
     def __on_key_pressed(self, widget, keyval, keymod):
-        if keyval == gtk.keysyms.Return:
+        if keyval == Gdk.KEY_Return:
             self.update(widget)
-        elif keyval == gtk.keysyms.Escape:
+        elif keyval == Gdk.KEY_Escape:
             self.__unclose(widget)
         return False
     
     def __detect_shortcut(self, widget, event=None):
-        keyname = gtk.gdk.keyval_name(event.keyval)
+        keyname = Gdk.keyval_name(event.keyval)
         
-        if (event.state & gtk.gdk.CONTROL_MASK) and keyname.lower() == 'f':
+        if (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 'f':
             self.show_friend_dialog(widget)
             return True
-        elif (event.state & gtk.gdk.CONTROL_MASK) and keyname.lower() == 'l':
+        elif (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 'l':
             self.clear(widget)
             return True
-        elif (event.state & gtk.gdk.CONTROL_MASK) and keyname.lower() == 't':
+        elif (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 't':
             self.update(widget)
             return True
         return False
@@ -167,8 +171,9 @@ class UpdateBox(gtk.Window):
         return True
         
     def show_friend_dialog(self, widget):
-        f = FriendsWin(self, self.add_friend, 
-            self.mainwin.request_friends_list())
+        pass
+        # f = FriendsWin(self, self.add_friend, 
+        #     self.mainwin.request_friends_list())
         
     def block(self):
         self.blocked = True
@@ -202,7 +207,7 @@ class UpdateBox(gtk.Window):
             self.label.set_markup('<span size="medium"><b>%s %s</b></span>' % 
                 (_('In reply to'), user))
         
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.set_focus(self.update_text)
         buffer = self.update_text.get_buffer()
         buffer.set_text(text)
@@ -304,18 +309,18 @@ class UpdateBox(gtk.Window):
         
         buffer.insert_at_cursor(user)
 
-class MessageTextView(gtk.TextView):
+class MessageTextView(Gtk.TextView):
     '''Class for the message textview (where user writes new messages)
     for chat/groupchat windows'''
-    __gsignals__ = dict(mykeypress=(gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION, None, (int, gtk.gdk.ModifierType)))
+    __gsignals__ = dict(mykeypress=(gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION, None, (int, Gdk.ModifierType)))
         
     def __init__(self):
-        gtk.TextView.__init__(self)
+        gobject.GObject.__init__(self)
         
         self.set_border_width(2)
         self.set_left_margin(2)
         self.set_right_margin(2)
-        self.set_wrap_mode(gtk.WRAP_WORD)
+        self.set_wrap_mode(Gtk.WrapMode.WORD)
         self.set_accepts_tab(False)
 
     def destroy(self):
@@ -328,5 +333,5 @@ class MessageTextView(gtk.TextView):
 if gobject.pygtk_version < (2, 8, 0):
     gobject.type_register(MessageTextView)
 
-gtk.binding_entry_add_signal(MessageTextView, gtk.keysyms.Return, 0, 'mykeypress', int, gtk.keysyms.Return, gtk.gdk.ModifierType, 0)
-gtk.binding_entry_add_signal(MessageTextView, gtk.keysyms.Escape, 0, 'mykeypress', int, gtk.keysyms.Escape, gtk.gdk.ModifierType, 0)
+Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Return, 0, 'mykeypress', int, Gdk.KEY_Return, Gdk.ModifierType, 0)
+Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Escape, 0, 'mykeypress', int, Gdk.KEY_Escape, Gdk.ModifierType, 0)

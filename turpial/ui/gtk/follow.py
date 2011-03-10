@@ -5,11 +5,12 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jul 07, 2010
 
-import gtk
+import gobject
+from gi.repository import Gtk
 
-class Follow(gtk.Window):
+class Follow(Gtk.Window):
     def __init__(self, mainwin, friend=''):
-        gtk.Window.__init__(self)
+        gobject.GObject.__init__(self)
         
         self.mainwin = mainwin
         self.set_title(_('Follow'))
@@ -18,26 +19,26 @@ class Follow(gtk.Window):
         self.set_resizable(False)
         self.set_modal(True)
         self.set_border_width(6)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         
-        lbl_user = gtk.Label(_('User'))
-        self.user = gtk.Entry()
+        lbl_user = Gtk.Label(label=_('User'))
+        self.user = Gtk.Entry()
         
-        self.btn_ok = gtk.Button(_('Ok'))
-        self.btn_ok.set_flags(gtk.CAN_DEFAULT)
-        btn_cancel = gtk.Button(_('Cancel'))
+        self.btn_ok = Gtk.Button(_('Ok'))
+        self.btn_ok.set_can_default(True)
+        btn_cancel = Gtk.Button(_('Cancel'))
         
-        hbox = gtk.HBox(False, 6)
+        hbox = Gtk.HBox(False, 6)
         hbox.pack_start(lbl_user, False, False)
         hbox.pack_start(self.user, True, True)
         
-        box_button = gtk.HButtonBox()
+        box_button = Gtk.HButtonBox()
         box_button.set_spacing(6)
-        box_button.set_layout(gtk.BUTTONBOX_END)
-        box_button.pack_start(self.btn_ok)
-        box_button.pack_start(btn_cancel)
+        box_button.set_layout(Gtk.ButtonBoxStyle.END)
+        box_button.pack_start(self.btn_ok, True, True, 0)
+        box_button.pack_start(btn_cancel, True, True, 0)
         
-        vbox = gtk.VBox(True)
+        vbox = Gtk.VBox(True)
         vbox.pack_start(hbox, False, False)
         vbox.pack_start(box_button, False, False)
         

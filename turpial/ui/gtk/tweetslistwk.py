@@ -6,8 +6,9 @@
 # Feb 16, 2010
 
 import os
-import gtk
-import pango
+from gi.repository import Gdk
+from gi.repository import Gtk
+from gi.repository import Pango
 import webkit
 import gobject
 import logging
@@ -20,9 +21,9 @@ log = logging.getLogger('Gtk:Tweetlist')
 
 gobject.threads_init()
 
-class TweetListWebkit(gtk.VBox):
+class TweetListWebkit(Gtk.VBox):
     def __init__(self, mainwin, label='', menu='normal'):
-        gtk.VBox.__init__(self, False)
+        gobject.GObject.__init__(self, False)
         
         self.last = None    # Last tweets updated
         self.mainwin = mainwin
@@ -46,22 +47,22 @@ class TweetListWebkit(gtk.VBox):
         self.settings = webkit.WebSettings()
         self.list.set_settings(self.settings)
         
-        self.label = gtk.Label(label)
+        self.label = Gtk.Label(label=label)
         self.caption = label
         
-        self.lblerror = gtk.Label()
+        self.lblerror = Gtk.Label()
         self.lblerror.set_use_markup(True)
         self.waiting = CairoWaiting(self.mainwin)
-        align = gtk.Alignment(xalign=1, yalign=0.5)
+        align = Gtk.Alignment.new(xalign=1, yalign=0.5)
         align.add(self.waiting)
         
-        bottombox = gtk.HBox(False)
+        bottombox = Gtk.HBox(False)
         bottombox.pack_start(self.lblerror, False, False, 2)
         bottombox.pack_start(align, True, True, 2)
         
-        scroll = gtk.ScrolledWindow()
-        scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        scroll.set_shadow_type(gtk.SHADOW_IN)
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_shadow_type(Gtk.ShadowType.IN)
         scroll.add(self.list)
             
         self.pack_start(scroll, True, True)
@@ -172,8 +173,8 @@ class TweetListWebkit(gtk.VBox):
         self.page += twt
         if render: 
             gobject.idle_add(self.list.load_string, self.page, "text/html", "iso-8859-15", "timeline")
-        #color = gtk.gdk.Color(255*257, 242*257, 212*257) if p['fav'] else None
-        color = gtk.gdk.Color(250*257, 237*257, 187*257) if p.is_favorite else None
+        #color = Gdk.Color(255*257, 242*257, 212*257) if p['fav'] else None
+        color = Gdk.Color(250*257, 237*257, 187*257) if p.is_favorite else None
         
     def update_user_pic(self, user, pic):
         # Evaluar si es más eficiente esto o cargar toda la lista cada vez

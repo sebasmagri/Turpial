@@ -25,7 +25,7 @@ else:
     import simplejson as json
     
 try:
-    import gconf
+    from gi.repository import GConf
     GCONF = True
 except:
     GCONF = False
@@ -63,7 +63,7 @@ class TurpialHTTP:
         proxies = {}
         
         if detect_desktop_environment() == 'gnome' and GCONF:
-            gclient = gconf.client_get_default()
+            gclient = GConf.Client.get_default()
             if gclient.get_bool('/system/http_proxy/use_http_proxy'):
                 proxies['http'] = "%s:%d" % (
                     gclient.get_string('/system/http_proxy/host'), 
