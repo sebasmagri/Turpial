@@ -102,7 +102,7 @@ class Main(BaseGui, Gtk.Window):
     def __create_trayicon(self):
         self.tray = Gtk.StatusIcon()
         self.tray.set_from_pixbuf(self.load_image('turpial-tray.png', True))
-        self.tray.set_tooltip('Turpial')
+        self.tray.set_tooltip_text('Turpial')
         self.tray.connect("activate", self.__on_trayicon_click)
         self.tray.connect("popup-menu", self.__show_tray_menu)
         
@@ -117,7 +117,7 @@ class Main(BaseGui, Gtk.Window):
                 self.move(self.win_wide_pos[0], self.win_wide_pos[1])
             else:
                 self.move(self.win_single_pos[0], self.win_single_pos[1])
-            
+
     def __on_focus(self, widget, event):
         self.tray.set_from_pixbuf(self.load_image('turpial-tray.png', True))
     
@@ -310,7 +310,7 @@ class Main(BaseGui, Gtk.Window):
 
         self.mode = 1
         if self.vbox is not None: self.remove(self.vbox)
-        
+
         self.vbox = LoginBox(self)
         
         self.add(self.vbox)

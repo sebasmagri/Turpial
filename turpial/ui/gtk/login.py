@@ -133,7 +133,7 @@ class LoginBox(Gtk.VBox):
         
     def signin(self, widget):
         self.message.deactivate()
-        self.waiting.start()
+        # self.waiting.start()
         self.btn_oauth.set_sensitive(False)
         self.username.set_sensitive(False)
         self.password.set_sensitive(False)
@@ -147,7 +147,7 @@ class LoginBox(Gtk.VBox):
         
     def cancel_login(self, error):
         self.message.set_error(error)
-        self.waiting.stop(error=True)
+        # self.waiting.stop(error=True)
         self.btn_oauth.set_sensitive(True)
         self.remember.set_sensitive(True)
         self.btn_settings.set_sensitive(True)

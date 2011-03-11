@@ -49,19 +49,19 @@ class Preferences(Gtk.Window):
             self.muted = MutedTab(self.mainwin)
             self.browser = BrowserTab(self.mainwin, self.current['Browser'])
             
-            notebook.append_page(self.general, Gtk.Label(label=_('General')))
-            notebook.append_page(self.notif, Gtk.Label(label=_('Notifications')))
-            notebook.append_page(self.services, Gtk.Label(label=_('Services')))
-            notebook.append_page(self.muted, Gtk.Label(label=_('Mute')))
-            notebook.append_page(self.browser, Gtk.Label(label=_('Web Browser')))
+            notebook.append_page(self.general, Gtk.Label.new(_('General')))
+            notebook.append_page(self.notif, Gtk.Label.new(_('Notifications')))
+            notebook.append_page(self.services, Gtk.Label.new(_('Services')))
+            notebook.append_page(self.muted, Gtk.Label.new(_('Mute')))
+            notebook.append_page(self.browser, Gtk.Label.new(_('Web Browser')))
             
         self.proxy = ProxyTab(self.global_cfg['Proxy'])
-        notebook.append_page(self.proxy, Gtk.Label(label=_('API Proxy')))
+        notebook.append_page(self.proxy, Gtk.Label.new(_('API Proxy')))
         
         vbox = Gtk.VBox()
         #vbox.set_spacing(4)
-        vbox.pack_start(notebook, True, True)
-        vbox.pack_start(box_button, False, False)
+        vbox.pack_start(notebook, True, True, 0)
+        vbox.pack_start(box_button, False, False, 0)
         
         btn_close.connect('clicked', self.__close)
         btn_save.connect('clicked', self.__save)
@@ -109,10 +109,8 @@ class PreferencesTab(Gtk.VBox):
         description.set_use_markup(True)
         description.set_markup(desc)
         description.set_justify(Gtk.Justification.FILL)
-        #desc_box = Gtk.HBox(False, 3)
-        #desc_box.pack_start(description, True, True)
         
-        desc_align = Gtk.Alignment.new(xalign=0.0, yalign=0.0)
+        desc_align = Gtk.Alignment.new(0, 0, 0, 0)
         desc_align.set_padding(0, 5, 10, 10)
         desc_align.add(description)
         
@@ -129,7 +127,7 @@ class TimeScroll(Gtk.HBox):
         self.callback = callback
         self.value = val
         self.unit = unit
-        lbl = Gtk.Label(label=label)
+        lbl = Gtk.Label.new(label)
         lbl.set_size_request(lbl_size, -1)
         lbl.set_justify(Gtk.Justification.LEFT)
         adj = Gtk.Adjustment(val, min, max, step, page, size)
@@ -548,10 +546,10 @@ Restart)'), current)
 different of twitter.com'))
         except:
             pass
-        url_lbl = Gtk.Label(label=_('Twitter API URL'))
+        url_lbl = Gtk.Label.new(_('Twitter API URL'))
         self.url = Gtk.Entry()
         
-        self.url_box = Gtk.HBox(False)
+        self.url_box = Gtk.HBox()
         self.url_box.pack_start(url_lbl, False, False, 3)
         self.url_box.pack_start(self.url, True, True, 3)
         self.url_box.set_sensitive(False)
