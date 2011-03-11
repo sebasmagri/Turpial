@@ -5,15 +5,13 @@
 # Author: Wil Alvarez (aka Satanas)
 # Feb 02, 2010
 
-import gobject
-from gi.repository import Gdk
-from gi.repository import Gtk
+from gi.repository import Gdk, GObject, Gtk
 
 from turpial.ui.gtk.columns import SingleColumn
 
 class ConversationBox(Gtk.Window):
     def __init__(self, parent):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.working = True
         self.mainwin = parent

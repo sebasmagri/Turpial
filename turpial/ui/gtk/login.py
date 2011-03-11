@@ -5,8 +5,10 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 08, 2010
 
-from gi.repository import Gdk, GdkPixbuf, GObject, Gtk
 import base64
+
+from gi.repository import Gdk, GdkPixbuf, GObject, Gtk
+import cairo
 
 from turpial.ui.gtk.loginlabel import LoginLabel
 from turpial.ui.gtk.waiting import CairoWaiting
@@ -15,9 +17,11 @@ from turpial.config import PROTOCOLS
 class LoginBox(Gtk.VBox):
     def __init__(self, mainwin):
         GObject.GObject.__init__(self)
-        
+
         self.mainwin = mainwin
+
         avatar = self.mainwin.load_image('logo2.png')
+
         self.message = LoginLabel(self)
         us, pw, rem = self.mainwin.request_remembered(0)
         

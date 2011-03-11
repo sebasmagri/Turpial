@@ -5,9 +5,7 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 24, 2009
 
-import gobject
-from gi.repository import Gdk
-from gi.repository import Gtk
+from gi.repository import Gdk, GObject, Gtk
 import subprocess
 
 from turpial.api.servicesapi import URL_SERVICES, PHOTO_SERVICES
@@ -15,7 +13,7 @@ from turpial.api.servicesapi import URL_SERVICES, PHOTO_SERVICES
 class Preferences(Gtk.Window):
     """Ventana de preferencias de Turpial"""
     def __init__(self, parent=None, mode='user'):
-        gobject.GObject.__init__(self, Gtk.WindowType.TOPLEVEL)
+        GObject.GObject.__init__(self)
         
         self.mode = mode
         self.mainwin = parent
@@ -103,7 +101,7 @@ class Preferences(Gtk.Window):
         
 class PreferencesTab(Gtk.VBox):
     def __init__(self, desc, current=None):
-        gobject.GObject.__init__(self, False)
+        GObject.GObject.__init__(self)
         
         self.current = current
         description = Gtk.Label()
@@ -126,7 +124,7 @@ class PreferencesTab(Gtk.VBox):
 class TimeScroll(Gtk.HBox):
     def __init__(self, label='', val=5, min=1, max=60, step=3, page=6, size=0,
         callback=None, lbl_size=120, unit='min'):
-        gobject.GObject.__init__(self, False)
+        GObject.GObject.__init__(self)
         
         self.callback = callback
         self.value = val

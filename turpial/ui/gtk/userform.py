@@ -5,14 +5,13 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 21, 2009
 
-import gobject
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk
 
 from turpial.ui.gtk.waiting import CairoWaiting
 
 class UserForm(Gtk.VBox):
     def __init__(self, mainwin, label='', profile=None):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         label_width = 75
         self.mainwin = mainwin

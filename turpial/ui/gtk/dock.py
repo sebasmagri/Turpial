@@ -5,14 +5,13 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 20, 2009
 
-import gobject
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 
 from turpial.ui.gtk.about import About
 
 class Dock(Gtk.Alignment):
     def __init__(self, parent, mode='single'):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.mainwin = parent
         

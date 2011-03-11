@@ -100,9 +100,6 @@ class Main(BaseGui, Gtk.Window):
         self.__create_trayicon()
         
     def __create_trayicon(self):
-        if Gtk.check_version(2, 10, 0) is not None:
-            log.debug("Disabled Tray Icon. It needs PyGTK >= 2.10.0")
-            return
         self.tray = Gtk.StatusIcon()
         self.tray.set_from_pixbuf(self.load_image('turpial-tray.png', True))
         self.tray.set_tooltip('Turpial')

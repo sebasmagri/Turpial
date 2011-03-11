@@ -6,7 +6,6 @@
 # Dic 21, 2009
 
 from gi.repository import Gtk, GObject
-import cairo
 
 class LoginLabel(Gtk.DrawingArea):
     def __init__(self, parent):
@@ -15,7 +14,7 @@ class LoginLabel(Gtk.DrawingArea):
         self.error = None
         self.active = False
         self.timer = None
-        self.connect('draw', self.expose)
+        self.connect('draw', self.draw)
         self.set_size_request(30, 25)
     
     def deactivate(self):
@@ -32,29 +31,23 @@ class LoginLabel(Gtk.DrawingArea):
         #    GObject.source_remove(self.timer)
         #self.timer = GObject.timeout_add(5000, self.deactivate)
         self.queue_draw()
-        
-    def expose(self, widget, event):
-        cr = widget.window.cairo_create()
-        cr.set_line_width(0.8)
+
+    def draw(self, cairo_ctx):
         rect = self.get_allocation()
         
-        cr.rectangle(event.area.x, event.area.y, event.area.width,
-                     event.area.height)
-        cr.clip()
-        
-        cr.rectangle(0, 0, rect.width, rect.height)
+        Gdk.cairo_rectangle(cairo_ctx, rect)
+        cairo_ctx.clip()
+
         if not self.active:
             return
-        
-        cr.set_source_rgb(0, 0, 0)
-        cr.fill()
-        cr.select_font_face('Courier', cairo.FONT_SLANT_NORMAL,
+
+        cairo_ctx.set_source_rgb(0, 0, 0)
+        cairo_ctx.fill()
+        cairo_ctx.select_font_face('Courier', cairo.FONT_SLANT_NORMAL,
                             cairo.FONT_WEIGHT_NORMAL)
-        cr.set_font_size(12)
-        cr.set_source_rgb(1, 0.87, 0)
-        cr.move_to(10, 15)
-        
-        cr.text_path(self.error)
-        cr.stroke()
-        
-        #cr.show_text(self.error)
+        cairo_ctx.set_font_size(12)
+        cairo_ctx.set_source_rgb(1, 0.87, 0)
+        cairo_ctx.move_to(10, 15)
+
+        cairo_ctx.text_path(self.error)
+        cairo_ctx.stroke()

@@ -4,13 +4,11 @@
 #
 # Author: Wil Alvarez (aka Satanas)
 
-from gi.repository import Gdk
-from gi.repository import Gtk
-import gobject
+from gi.repository import Gdk, GObject, Gtk
 
 class FriendsWin(Gtk.Window):
     def __init__(self, parent, callback, friends):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.updatebox = parent
         self.set_title(_('Add friend'))

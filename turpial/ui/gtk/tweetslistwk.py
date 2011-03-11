@@ -6,11 +6,8 @@
 # Feb 16, 2010
 
 import os
-from gi.repository import Gdk
-from gi.repository import Gtk
-from gi.repository import Pango
+from gi.repository import Gdk, GObject, Gtk, Pango
 import webkit
-import gobject
 import logging
 import webbrowser
 
@@ -19,11 +16,11 @@ from turpial.ui import util as util
 
 log = logging.getLogger('Gtk:Tweetlist')
 
-gobject.threads_init()
+GObject.threads_init()
 
 class TweetListWebkit(Gtk.VBox):
     def __init__(self, mainwin, label='', menu='normal'):
-        gobject.GObject.__init__(self, False)
+        GObject.GObject.__init__(self, False)
         
         self.last = None    # Last tweets updated
         self.mainwin = mainwin
@@ -172,7 +169,7 @@ class TweetListWebkit(Gtk.VBox):
         
         self.page += twt
         if render: 
-            gobject.idle_add(self.list.load_string, self.page, "text/html", "iso-8859-15", "timeline")
+            GObject.idle_add(self.list.load_string, self.page, "text/html", "iso-8859-15", "timeline")
         #color = Gdk.Color(255*257, 242*257, 212*257) if p['fav'] else None
         color = Gdk.Color(250*257, 237*257, 187*257) if p.is_favorite else None
         
@@ -206,7 +203,7 @@ class TweetListWebkit(Gtk.VBox):
                     continue
                 self.add_tweet(tweet, False)
             self.last = arr_tweets
-            gobject.idle_add(self.list.load_string, self.page, "text/html", "utf-8", "timeline")
+            GObject.idle_add(self.list.load_string, self.page, "text/html", "utf-8", "timeline")
             return count
             
     def start_update(self):

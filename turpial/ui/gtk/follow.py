@@ -5,12 +5,11 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jul 07, 2010
 
-import gobject
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk
 
 class Follow(Gtk.Window):
     def __init__(self, mainwin, friend=''):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.mainwin = mainwin
         self.set_title(_('Follow'))
@@ -21,16 +20,16 @@ class Follow(Gtk.Window):
         self.set_border_width(6)
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         
-        lbl_user = Gtk.Label(label=_('User'))
+        lbl_user = Gtk.Label(_('User'))
         self.user = Gtk.Entry()
         
         self.btn_ok = Gtk.Button(_('Ok'))
         self.btn_ok.set_can_default(True)
         btn_cancel = Gtk.Button(_('Cancel'))
         
-        hbox = Gtk.HBox(False, 6)
-        hbox.pack_start(lbl_user, False, False)
-        hbox.pack_start(self.user, True, True)
+        hbox = Gtk.HBox()
+        hbox.pack_start(lbl_user, False, False, 0)
+        hbox.pack_start(self.user, True, True, 0)
         
         box_button = Gtk.HButtonBox()
         box_button.set_spacing(6)
@@ -38,9 +37,9 @@ class Follow(Gtk.Window):
         box_button.pack_start(self.btn_ok, True, True, 0)
         box_button.pack_start(btn_cancel, True, True, 0)
         
-        vbox = Gtk.VBox(True)
-        vbox.pack_start(hbox, False, False)
-        vbox.pack_start(box_button, False, False)
+        vbox = Gtk.VBox()
+        vbox.pack_start(hbox, False, False, 0)
+        vbox.pack_start(box_button, False, False, 0)
         
         self.btn_ok.connect('clicked', self.__follow)
         btn_cancel.connect('clicked', self.__close)

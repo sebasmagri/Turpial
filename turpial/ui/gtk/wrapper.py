@@ -5,8 +5,7 @@
 # Author: Wil Alvarez (aka Satanas)
 # Dic 21, 2009
 
-import gobject
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk
 
 class WrapperAlign:
     left = 0
@@ -15,7 +14,7 @@ class WrapperAlign:
     
 class Wrapper(Gtk.VBox):
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.children = {
             WrapperAlign.left: None,

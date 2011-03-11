@@ -5,9 +5,7 @@
 # Author: Wil Alvarez (aka Satanas)
 # Sep 27, 2010
 
-from gi.repository import Gdk
-from gi.repository import Gtk
-import gobject
+from gi.repository import Gdk, GObject, Gtk
 
 SPELLING = False
 try:
@@ -21,7 +19,7 @@ from turpial.ui.gtk.friendwin import FriendsWin
 
 class UploadPicBox(Gtk.Window):
     def __init__(self, parent):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.filename = ''
         self.pic_url = ''
@@ -304,10 +302,10 @@ class UploadPicBox(Gtk.Window):
 class MessageTextView(Gtk.TextView):
     '''Class for the message textview (where user writes new messages)
     for chat/groupchat windows'''
-    __gsignals__ = dict(mykeypress=(gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION, None, (int, Gdk.ModifierType)))
+    __gsignals__ = dict(mykeypress=(GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION, None, (int, Gdk.ModifierType)))
         
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.set_border_width(2)
         self.set_left_margin(2)
@@ -317,13 +315,13 @@ class MessageTextView(Gtk.TextView):
 
     def destroy(self):
         import gc
-        gobject.idle_add(lambda:gc.collect())
+        GObject.idle_add(lambda:gc.collect())
 
     def clear(self, widget=None):
         self.get_buffer().set_text('')
         
-if gobject.pygtk_version < (2, 8, 0):
-    gobject.type_register(MessageTextView)
+if GObject.pygtk_version < (2, 8, 0):
+    GObject.type_register(MessageTextView)
 
 # Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Return, 0, 'mykeypress', int, Gdk.KEY_Return, Gdk.ModifierType, 0)
 # Gtk.binding_entry_add_signal(MessageTextView, Gdk.KEY_Escape, 0, 'mykeypress', int, Gdk.KEY_Escape, Gdk.ModifierType, 0)

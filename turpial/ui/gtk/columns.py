@@ -5,8 +5,7 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 25, 2010
 
-import gobject
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk
 import logging
 
 from turpial.ui import util as util
@@ -18,7 +17,7 @@ log = logging.getLogger('Gtk:Column')
 
 class GenericColumn(Gtk.VBox):
     def __init__(self, mainwin, label=''):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.mainwin = mainwin
         self.statuslist = StatusList(mainwin)
@@ -31,7 +30,7 @@ class GenericColumn(Gtk.VBox):
         
         self.connect('draw', self.error_show)
         
-    def error_show(self, widget, event):
+    def error_show(self, cairo_ctx):
         self.errorbox.show()
         
     def update_tweets(self, response):

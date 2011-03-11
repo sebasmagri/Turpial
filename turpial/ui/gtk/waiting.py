@@ -35,24 +35,20 @@ class CairoWaiting(Gtk.DrawingArea):
         if self.count > 31: self.count = 1
         self.queue_draw()
         return True
-        
+
     # http://git.gnome.org/browse/pygobject/tree/demos/gtk-demo/demos/drawingarea.py
-    def draw(self, widget, cairo_ctx, event):
-        cairo_ctx.set_line_width(0.8)
+
+    def draw(self, cairo_ctx):
         rect = self.get_allocation()
 
-        cairo_ctx.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
-        cairo_ctx.clip()
-        
-        cairo_ctx.rectangle(0, 0, rect.width, rect.height)
         if not self.active: return
         
         if self.error:
             img = 'wait-error.png'
         else:
-            #img = 'wait2-%i.png' % (self.count + 1)
             img = 'wait%i.png' % (self.count + 1)
         pix = self.par.load_image(img, True)
+        Gdk.cairo_rectangle(cairo_ctx, rect)
         cairo_ctx.set_source_pixbuf(pix, 0, 0)
         cairo_ctx.paint()
         del pix

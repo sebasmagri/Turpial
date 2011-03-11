@@ -5,13 +5,11 @@
 # Author: Wil Alvarez (aka Satanas)
 # Jun 26, 2010
 
-from gi.repository import Gdk
-from gi.repository import Gtk
-import gobject
+from gi.repository import Gdk, GObject, Gtk
 
 class ErrorBox(Gtk.HBox):
     def __init__(self, padding=0):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.timer = None
         
@@ -48,7 +46,7 @@ class ErrorBox(Gtk.HBox):
         else:
             Gtk.HBox.show_all(self)
         
-    def draw(self):
+    def draw(self, cairo_ctx):
         self.__show()
         
     def show_all(self):
@@ -57,7 +55,7 @@ class ErrorBox(Gtk.HBox):
     def show_error(self, msg, show=True):
         if show:
             self.message.set_markup(u"<span size='small'>%s</span>" % msg)
-            self.timer = gobject.timeout_add(7000, self.close)
+            self.timer = GObject.timeout_add(7000, self.close)
             self.show()
         else:
             self.hide()
@@ -69,6 +67,4 @@ class ErrorBox(Gtk.HBox):
     def close(self, widget=None, event=None):
         self.hide()
         if self.timer:
-            gobject.source_remove(self.timer)
-        
-        
+            GObject.source_remove(self.timer)
