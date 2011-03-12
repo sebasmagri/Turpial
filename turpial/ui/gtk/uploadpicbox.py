@@ -140,13 +140,13 @@ class UploadPicBox(Gtk.Window):
     def __detect_shortcut(self, widget, event=None):
         keyname = Gdk.keyval_name(event.keyval)
         
-        if (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 'f':
+        if (event.get_state() & Gdk.ModifierType.CONTROL_MASK) and keyname.lower() == 'f':
             self.show_friend_dialog(widget)
             return True
-        elif (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 'l':
+        elif (event.get_state() & Gdk.ModifierType.CONTROL_MASK) and keyname.lower() == 'l':
             self.clear(widget)
             return True
-        elif (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 'u':
+        elif (event.get_state() & Gdk.ModifierType.CONTROL_MASK) and keyname.lower() == 'u':
             self.update(widget)
             return True
         return False

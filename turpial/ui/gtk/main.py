@@ -33,7 +33,7 @@ try:
 except:
     extend_mode = False
 
-#Gdk.threads_init()
+Gdk.threads_init()
 
 log = logging.getLogger('Gtk')
 
@@ -320,7 +320,7 @@ class Main(Gtk.Window, BaseGui):
         
         self.update_config(config, global_cfg, True)
         
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         self.contentbox.add(self.contenido)
         
         self.statusbar = Gtk.Statusbar()
@@ -357,7 +357,7 @@ class Main(Gtk.Window, BaseGui):
         
         #if (self.win_pos[0] > 0 and self.win_pos[1] > 0):
         #    self.move(self.win_pos[0], self.win_pos[1])
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
         if config.read('Notifications', 'login') == 'on':
             self.notify.login(p.items)
@@ -417,7 +417,7 @@ class Main(Gtk.Window, BaseGui):
         self.profile.search.start_update()
         
     def update_column1(self, tweets):
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         
         last = self.home.timeline.statuslist.last
         count = self.home.timeline.update_tweets(tweets)
@@ -428,11 +428,11 @@ class Main(Gtk.Window, BaseGui):
         if self.updating[0] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
             
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         self.updating[0] = False
         
     def update_column2(self, tweets):
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         
         last = self.home.replies.statuslist.last
         count = self.home.replies.update_tweets(tweets)
@@ -443,11 +443,11 @@ class Main(Gtk.Window, BaseGui):
         if self.updating[1] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
         
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         self.updating[1] = False
         
     def update_column3(self, tweets):
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         
         last = self.home.direct.statuslist.last
         count = self.home.direct.update_tweets(tweets)
@@ -458,37 +458,37 @@ class Main(Gtk.Window, BaseGui):
         if self.updating[2] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
             
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         self.updating[2] = False
         
     def update_favorites(self, favs):
         log.debug(u'Actualizando favoritos')
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         #self.home.timeline.update_tweets(tweets)
         #self.home.replies.update_tweets(replies)
         self.profile.favorites.update_tweets(favs)
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_user_profile(self, profile):
         log.debug(u'Actualizando perfil del usuario')
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         self.profile.set_user_profile(profile)
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_follow(self, user, follow):
         self.notify.following(user, follow)
         
     def update_rate_limits(self, val):
         if val is None or val == []: return
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         self.statusbar.push(0, util.get_rates(val))
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_search(self, val):
         log.debug(u'Mostrando resultados de la búsqueda')
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         self.profile.search.update_tweets(val)
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_user_avatar(self, user, pic):
         self.home.timeline.update_user_pic(user, pic)
@@ -499,29 +499,29 @@ class Main(Gtk.Window, BaseGui):
         self.profile.search.update_user_pic(user, pic)
         
     def update_in_reply_to(self, tweet):
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         self.replybox.update([tweet])
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
     def update_conversation(self, tweets):
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         self.replybox.update(tweets)
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
     def tweet_changed(self, timeline, replies, favs):
         log.debug(u'Tweet modificado')
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         log.debug(u'--Actualizando el timeline')
         self.home.timeline.update_tweets(timeline)
         log.debug(u'--Actualizando las replies')
         self.home.replies.update_tweets(replies)
         log.debug(u'--Actualizando favoritos')
         self.profile.favorites.update_tweets(favs)
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
     def tweet_done(self, tweets):
         log.debug(u'Actualizando nuevo tweet')
-        #Gdk.threads_enter()
+        Gdk.threads_enter()
         if tweets.type == 'status':
             if self.updatebox.get_property('visible'):
                 self.updatebox.release()
@@ -534,7 +534,7 @@ class Main(Gtk.Window, BaseGui):
                 self.updatebox.release(tweets.errmsg)
             if self.uploadpic.get_property('visible'):
                 self.uploadpic.release()
-        #Gdk.threads_leave()
+        Gdk.threads_leave()
         
         self.update_timeline(tweets)
         
@@ -578,21 +578,21 @@ class Main(Gtk.Window, BaseGui):
         replies_interval = int(config.read('General', 'replies-update-interval'))
         directs_interval = int(config.read('General', 'directs-update-interval'))
         
-        #if thread:
-        self.version = global_cfg.read('App', 'version')
-        log.debug('Version %s' % self.version)
-        self.imgdir = config.imgdir
-        single_size = config.read('Window', 'single-win-size').split(',')
-        wide_size = config.read('Window', 'wide-win-size').split(',')
-        s_pos = config.read('Window', 'window-single-position').split(',')
-        w_pos = config.read('Window', 'window-wide-position').split(',')
-        self.win_state = config.read('Window', 'window-state')
-        self.win_visibility = config.read('Window', 'window-visibility')
-        self.single_win_size = (int(single_size[0]), int(single_size[1]))
-        self.wide_win_size = (int(wide_size[0]), int(wide_size[1]))
-        self.win_single_pos = (int(s_pos[0]), int(s_pos[1]))
-        self.win_wide_pos = (int(w_pos[0]), int(w_pos[1]))
-        #Gdk.threads_enter()
+        if thread:
+            self.version = global_cfg.read('App', 'version')
+            log.debug('Version %s' % self.version)
+            self.imgdir = config.imgdir
+            single_size = config.read('Window', 'single-win-size').split(',')
+            wide_size = config.read('Window', 'wide-win-size').split(',')
+            s_pos = config.read('Window', 'window-single-position').split(',')
+            w_pos = config.read('Window', 'window-wide-position').split(',')
+            self.win_state = config.read('Window', 'window-state')
+            self.win_visibility = config.read('Window', 'window-visibility')
+            self.single_win_size = (int(single_size[0]), int(single_size[1]))
+            self.wide_win_size = (int(wide_size[0]), int(wide_size[1]))
+            self.win_single_pos = (int(s_pos[0]), int(s_pos[1]))
+            self.win_wide_pos = (int(w_pos[0]), int(w_pos[1]))
+            Gdk.threads_enter()
         
         if self.workspace <> config.read('General', 'workspace'):
             self.workspace = config.read('General', 'workspace')
@@ -617,8 +617,8 @@ class Main(Gtk.Window, BaseGui):
             self.directs_timer = GObject.timeout_add(self.directs_interval * 60 * 1000, self.download_column3)
             log.debug('--Creado timer de Directs cada %i min' % self.directs_interval)
             
-        #if thread: 
-            #Gdk.threads_leave()
+        if thread: 
+            Gdk.threads_leave()
 
     # def size_request(self, widget, event, data=None):
     #     """Callback when the window changes its sizes. We use it to set the
