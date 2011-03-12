@@ -58,7 +58,7 @@ class Preferences(Gtk.Window):
         self.proxy = ProxyTab(self.global_cfg['Proxy'])
         notebook.append_page(self.proxy, Gtk.Label.new(_('API Proxy')))
         
-        vbox = Gtk.VBox()
+        vbox = Gtk.VBox.new(False, 0)
         #vbox.set_spacing(4)
         vbox.pack_start(notebook, True, True, 0)
         vbox.pack_start(box_button, False, False, 0)
@@ -176,7 +176,7 @@ timeline, mentions and direct messages'), current)
             unit='', lbl_size=120)
         
         self.estimated = Gtk.Label(label=_('You will use 0 calls to API per hour'))
-        est_align = Gtk.Alignment.new(xalign=0.5)
+        est_align = Gtk.Alignment.new(0.5, 0, 0, 0)
         est_align.set_padding(0, 8, 0, 0)
         est_align.add(self.estimated)
         
@@ -341,7 +341,7 @@ shorten URLs and upload images'), current)
             i += 1
         self.shorten.set_active(default)
         
-        url_box = Gtk.HBox(False)
+        url_box = Gtk.HBox.new(False, 0)
         url_box.pack_start(url_lbl, False, False, 3)
         url_box.pack_start(self.shorten, False, False, 3)
         
@@ -356,7 +356,7 @@ shorten URLs and upload images'), current)
             i += 1
         self.upload.set_active(default)
         
-        pic_box = Gtk.HBox(False)
+        pic_box = Gtk.HBox.new(False, 0)
         pic_box.pack_start(pic_lbl, False, False, 3)
         pic_box.pack_start(self.upload, False, False, 3)
         
@@ -471,7 +471,7 @@ open all links'), current)
         btn_test = Gtk.Button(_('Test'))
         btn_browse = Gtk.Button(_('Browse'))
         
-        cmd_box = Gtk.HBox(False)
+        cmd_box = Gtk.HBox.new(False, 0)
         cmd_box.pack_start(cmd_lbl, False, False, 3)
         cmd_box.pack_start(self.command, True, True, 3)
         
@@ -481,7 +481,7 @@ open all links'), current)
         buttons_box.pack_start(btn_test, True, True, 0)
         buttons_box.pack_start(btn_browse, True, True, 0)
         
-        self.other_vbox = Gtk.VBox(False, 2)
+        self.other_vbox = Gtk.VBox.new(False, 2)
         self.other_vbox.pack_start(cmd_box, False, False, 2)
         self.other_vbox.pack_start(buttons_box, False, False, 2)
         self.other_vbox.set_sensitive(False)
@@ -549,7 +549,7 @@ different of twitter.com'))
         url_lbl = Gtk.Label.new(_('Twitter API URL'))
         self.url = Gtk.Entry()
         
-        self.url_box = Gtk.HBox()
+        self.url_box = Gtk.HBox.new(False, 0)
         self.url_box.pack_start(url_lbl, False, False, 3)
         self.url_box.pack_start(self.url, True, True, 3)
         self.url_box.set_sensitive(False)

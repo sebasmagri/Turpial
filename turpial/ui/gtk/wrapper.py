@@ -30,14 +30,14 @@ class Wrapper(Gtk.VBox):
             self.remove(child)
         
         if mode == 'wide':
-            self.wrapper = Gtk.HBox(True)
+            self.wrapper = Gtk.HBox.new(True, 0)
             
             for i in range(3):
                 widget = self.children[i]
                 if widget is None:
                     continue
                 
-                box = Gtk.VBox(False)
+                box = Gtk.VBox.new(False, 0)
                 #box.pack_start(Gtk.Label(widget.caption, True, True, 0), False, False)
                 if widget.get_parent(): 
                     widget.reparent(box)

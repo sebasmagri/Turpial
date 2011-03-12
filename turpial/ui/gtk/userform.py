@@ -21,7 +21,7 @@ class UserForm(Gtk.VBox):
         
         self.user_pic = Gtk.Button()
         self.user_pic.set_size_request(60, 60)
-        pic_box = Gtk.VBox()
+        pic_box = Gtk.VBox.new(False, 0)
         pic_box.pack_start(self.user_pic, False, False, 10)
         
         self.screen_name = Gtk.Label()
@@ -36,13 +36,13 @@ class UserForm(Gtk.VBox):
         self.followers_count.set_alignment(0, 0.5)
         self.followers_count.set_padding(8, 0)
         
-        info_box = Gtk.VBox()
+        info_box = Gtk.VBox.new(False, 0)
         info_box.pack_start(self.screen_name, False, False, 5)
         info_box.pack_start(self.tweets_count, False, False, 0)
         info_box.pack_start(self.following_count, False, False, 0)
         info_box.pack_start(self.followers_count, False, False, 0)
         
-        top = Gtk.HBox()
+        top = Gtk.HBox.new(False, 0)
         top.pack_start(pic_box, False, False, 10)
         top.pack_start(info_box, False, False, 5)
         
@@ -50,7 +50,7 @@ class UserForm(Gtk.VBox):
         self.real_name.set_max_length(20)
         name_lbl = Gtk.Label.new(_('Name'))
         name_lbl.set_size_request(label_width, -1)
-        name_box = Gtk.HBox()
+        name_box = Gtk.HBox.new(False, 0)
         name_box.pack_start(name_lbl, False, False, 2)
         name_box.pack_start(self.real_name, True, True, 5)
         
@@ -58,7 +58,7 @@ class UserForm(Gtk.VBox):
         self.location.set_max_length(30)
         loc_lbl = Gtk.Label.new(_('Location'))
         loc_lbl.set_size_request(label_width, -1)
-        loc_box = Gtk.HBox()
+        loc_box = Gtk.HBox.new(False, 0)
         loc_box.pack_start(loc_lbl, False, False, 2)
         loc_box.pack_start(self.location, True, True, 5)
         
@@ -66,7 +66,7 @@ class UserForm(Gtk.VBox):
         self.url.set_max_length(100)
         url_lbl = Gtk.Label.new(_('URL'))
         url_lbl.set_size_request(label_width, -1)
-        url_box = Gtk.HBox()
+        url_box = Gtk.HBox.new(False, 0)
         url_box.pack_start(url_lbl, False, False, 2)
         url_box.pack_start(self.url, True, True, 5)
         
@@ -79,11 +79,11 @@ class UserForm(Gtk.VBox):
         scrollwin.add(self.bio)
         bio_lbl = Gtk.Label.new(_('Bio'))
         bio_lbl.set_size_request(label_width, -1)
-        bio_box = Gtk.HBox()
+        bio_box = Gtk.HBox.new(False, 0)
         bio_box.pack_start(bio_lbl, False, False, 2)
         bio_box.pack_start(scrollwin, True, True, 5)
         
-        form = Gtk.VBox()
+        form = Gtk.VBox.new(False, 0)
         form.pack_start(name_box, False, False, 4)
         form.pack_start(loc_box, False, False, 4)
         form.pack_start(url_box, False, False, 4)
@@ -104,11 +104,11 @@ class UserForm(Gtk.VBox):
         align = Gtk.Alignment.new(1, 0.5, 0, 0)
         align.add(self.waiting)
         
-        bottombox = Gtk.HBox()
+        bottombox = Gtk.HBox.new(False, 0)
         bottombox.pack_start(self.lblerror, False, False, 2)
         bottombox.pack_start(align, True, True, 2)
         
-        spacebox = Gtk.VBox()
+        spacebox = Gtk.VBox.new(False, 0)
         
         self.pack_start(top, False, False, 0)
         self.pack_start(form, False, False, 0)

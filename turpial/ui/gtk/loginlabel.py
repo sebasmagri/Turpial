@@ -10,33 +10,29 @@ from gi.repository import Gtk, GObject
 class LoginLabel(Gtk.DrawingArea):
     def __init__(self, parent):
         GObject.GObject.__init__(self)
-        self.par = parent
+
         self.error = None
         self.active = False
         self.timer = None
         self.connect('draw', self.draw)
         self.set_size_request(30, 25)
-    
+
     def deactivate(self):
-        #if self.timer:
-        #    GObject.source_remove(self.timer)
         self.error = None
         self.active = False
-        self.queue_draw()
-        
+        self.queue_draw_region(self.get_allocation())
+
     def set_error(self, error):
+        print('In LoginLabel.set_error()')
+        print('error: %s' % error)
         self.error = error
         self.active = True
-        #if self.timer:
-        #    GObject.source_remove(self.timer)
-        #self.timer = GObject.timeout_add(5000, self.deactivate)
-        self.queue_draw()
+        self.queue_draw_region(self.get_allocation())
 
     def draw(self, cairo_ctx):
+        print('In LoginLabel.draw()')
+        print('error: %s' % self.error)
         rect = self.get_allocation()
-        
-        Gdk.cairo_rectangle(cairo_ctx, rect)
-        cairo_ctx.clip()
 
         if not self.active:
             return

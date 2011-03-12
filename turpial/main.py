@@ -102,6 +102,7 @@ class Turpial:
             sys.exit(0)
             
         self.interface = options.interface
+
         if options.interface == 'gtk+' and ('gtk+' in INTERFACES):
             self.ui = _GTK(self, extend=True)
         elif options.interface == 'gtk' and ('gtk' in INTERFACES):

@@ -49,7 +49,7 @@ class Notification:
                         'pixmaps', 'turpial-notification.png')
                     icon = os.path.realpath(iconpath)
                 icon = "file://%s" % icon
-                notification = Notify.Notification(title, message, icon)
+                notification = Notify.Notification.new(title, message, icon)
                 notification.show()
     
     def new_tweets(self, title, count, tobject, tweet, icon):

@@ -8,7 +8,6 @@
 import base64
 
 from gi.repository import Gdk, GdkPixbuf, GObject, Gtk
-import cairo
 
 from turpial.ui.gtk.loginlabel import LoginLabel
 from turpial.ui.gtk.waiting import CairoWaiting
@@ -22,7 +21,8 @@ class LoginBox(Gtk.VBox):
 
         avatar = self.mainwin.load_image('logo2.png')
 
-        self.message = LoginLabel(self)
+        #self.message = LoginLabel(self)
+        self.message = Gtk.Label.new('')
         us, pw, rem = self.mainwin.request_remembered(0)
         
         lbl_user = Gtk.Label()
@@ -67,11 +67,11 @@ class LoginBox(Gtk.VBox):
         align = Gtk.Alignment.new(1, 0.5, 0, 0)
         align.add(self.waiting)
         
-        hbox = Gtk.HBox()
+        hbox = Gtk.HBox.new(False, 0)
         hbox.pack_start(lbl_user, False, False, 2)
         hbox.pack_start(align, True, True, 2)
         
-        table = Gtk.Table(11, 1, False)
+        table = Gtk.Table.new(11, 1, False)
         table.attach(avatar, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 10, 50)
         table.attach(self.message, 0, 1, 1, 2, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 20, 3)
         table.attach(hbox, 0, 1, 2, 3, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 50, 0)
@@ -132,8 +132,9 @@ class LoginBox(Gtk.VBox):
             self.password.set_sensitive(True)
         
     def signin(self, widget):
-        self.message.deactivate()
-        # self.waiting.start()
+        #self.message.deactivate()
+        self.message.set_text('')
+        self.waiting.start()
         self.btn_oauth.set_sensitive(False)
         self.username.set_sensitive(False)
         self.password.set_sensitive(False)
@@ -146,8 +147,8 @@ class LoginBox(Gtk.VBox):
             self.password.get_text(), PROTOCOLS[prot])
         
     def cancel_login(self, error):
-        self.message.set_error(error)
-        # self.waiting.stop(error=True)
+        self.message.set_text(error)
+        self.waiting.stop(error=True)
         self.btn_oauth.set_sensitive(True)
         self.remember.set_sensitive(True)
         self.btn_settings.set_sensitive(True)

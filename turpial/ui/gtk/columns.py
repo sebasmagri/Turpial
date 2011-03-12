@@ -28,9 +28,9 @@ class GenericColumn(Gtk.VBox):
         self.label = Gtk.Label(label=label)
         self.caption = label
         
-        self.connect('draw', self.error_show)
+        self.connect('draw', self.draw)
         
-    def error_show(self, cairo_ctx):
+    def draw(self, cairo_ctx):
         self.errorbox.show()
         
     def update_tweets(self, response):
@@ -91,7 +91,7 @@ class StandardColumn(GenericColumn):
         self.mark_all.set_image(self.mainwin.load_image('action-mark-all.png'))
         self.mark_all.set_tooltip_text(_('Mark all as read'))
         
-        listsbox = Gtk.HBox()
+        listsbox = Gtk.HBox.new(False, 0)
         listsbox.pack_start(self.mark_all, False, False, 0)
         listsbox.pack_start(self.listcombo, True, True, 0)
         listsbox.pack_start(self.refresh, False, False, 0)
@@ -194,10 +194,6 @@ class SingleColumn(GenericColumn):
     def __init__(self, mainwin, label=''):
         GenericColumn.__init__(self, mainwin, label)
         
-        #self.errorbox = Gtk.HBox(False)
-        #self.errorbox.pack_start(self.lblerror, False, False, 2)
-        #self.errorbox.pack_start(self.walign, False, False, 2)
-        
         self.pack_start(self.errorbox, False, False, 0)
         self.pack_start(self.statuslist, True, True, 0)
         
@@ -219,7 +215,7 @@ class SearchColumn(GenericColumn):
         except: 
             pass
         
-        inputbox = Gtk.HBox()
+        inputbox = Gtk.HBox.new(False, 0)
         inputbox.pack_start(self.input_topics, True, True, 0)
         inputbox.pack_start(self.clearbtn, False, False, 0)
         inputbox.pack_start(self.walign, False, False, 2)

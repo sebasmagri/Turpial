@@ -56,14 +56,14 @@ class UpdateBox(Gtk.Window):
         scroll.set_shadow_type(Gtk.ShadowType.IN)
         scroll.add(self.update_text)
         
-        updatebox = Gtk.HBox()
+        updatebox = Gtk.HBox.new(False, 0)
         updatebox.pack_start(scroll, True, True, 3)
         
         self.url = Gtk.Entry()
         self.btn_url = Gtk.Button(_('Shorten URL'))
         self.btn_url.set_tooltip_text(_('Shorten URL'))
         
-        tools = Gtk.HBox()
+        tools = Gtk.HBox.new(False, 0)
         tools.pack_start(self.url, True, True, 3)
         tools.pack_start(self.btn_url, False, False, 0)
         
@@ -87,7 +87,7 @@ class UpdateBox(Gtk.Window):
         chk_short = Gtk.CheckButton(_('Autoshort URLs'))
         chk_short.set_sensitive(False)
         
-        top = Gtk.HBox()
+        top = Gtk.HBox.new(False, 0)
         top.pack_start(self.label, True, True, 5)
         top.pack_start(self.num_chars, False, False, 5)
         
@@ -97,7 +97,7 @@ class UpdateBox(Gtk.Window):
         error_align = Gtk.Alignment.new(0, 0, 0, 0)
         error_align.add(self.lblerror)
         
-        buttonbox = Gtk.HBox()
+        buttonbox = Gtk.HBox.new(False, 0)
         #buttonbox.pack_start(chk_short, False, False, 0)
         buttonbox.pack_start(self.btn_frn, False, False, 0)
         buttonbox.pack_start(self.btn_clr, False, False, 0)
@@ -106,12 +106,12 @@ class UpdateBox(Gtk.Window):
         abuttonbox = Gtk.Alignment.new(1, 0.5, 0, 0)
         abuttonbox.add(buttonbox)
         
-        bottom = Gtk.HBox()
+        bottom = Gtk.HBox.new(False, 0)
         bottom.pack_start(self.waiting, False, False, 5)
         bottom.pack_start(error_align, True, True, 4)
         bottom.pack_start(abuttonbox, True, True, 5)
         
-        vbox = Gtk.VBox()
+        vbox = Gtk.VBox.new(False, 0)
         vbox.pack_start(top, False, False, 2)
         vbox.pack_start(updatebox, True, True, 2)
         # vbox.pack_start(bottom, False, False, 2)
@@ -149,10 +149,10 @@ class UpdateBox(Gtk.Window):
     def __detect_shortcut(self, widget, event=None):
         keyname = Gdk.keyval_name(event.keyval)
         
-        if (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 'f':
+        if (event.get_state() & Gdk.ModifierType.CONTROL_MASK) and keyname.lower() == 'f':
             self.show_friend_dialog(widget)
             return True
-        elif (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 'l':
+        elif (event.get_state() & Gdk.ModifierType.CONTROL_MASK) and keyname.lower() == 'l':
             self.clear(widget)
             return True
         elif (event.get_state() & Gdk.EventMask.CONTROL_MASK) and keyname.lower() == 't':

@@ -27,7 +27,7 @@ class Follow(Gtk.Window):
         self.btn_ok.set_can_default(True)
         btn_cancel = Gtk.Button(_('Cancel'))
         
-        hbox = Gtk.HBox()
+        hbox = Gtk.HBox.new(False, 0)
         hbox.pack_start(lbl_user, False, False, 0)
         hbox.pack_start(self.user, True, True, 0)
         
@@ -37,7 +37,7 @@ class Follow(Gtk.Window):
         box_button.pack_start(self.btn_ok, True, True, 0)
         box_button.pack_start(btn_cancel, True, True, 0)
         
-        vbox = Gtk.VBox()
+        vbox = Gtk.VBox.new(False, 0)
         vbox.pack_start(hbox, False, False, 0)
         vbox.pack_start(box_button, False, False, 0)
         

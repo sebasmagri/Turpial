@@ -24,7 +24,7 @@ class ConversationBox(Gtk.Window):
         
         self.tweets = SingleColumn(parent, _('In reply to...'))
         
-        top = Gtk.VBox()
+        top = Gtk.VBox.new(False, 0)
         top.pack_start(self.tweets, True, True, 0)
         
         self.add(top)

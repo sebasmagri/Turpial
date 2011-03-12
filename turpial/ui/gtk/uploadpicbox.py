@@ -37,7 +37,7 @@ class UploadPicBox(Gtk.Window):
         #self.btn_pic = Gtk.Button(_('Click to select image'))
         self.btn_pic = Gtk.Button()
         self.btn_pic.set_size_request(250, 250)
-        pic_box = Gtk.VBox()
+        pic_box = Gtk.VBox.new(False, 0)
         pic_box.pack_start(self.btn_pic, True, True, 0)
         
         self.label = Gtk.Label()
@@ -63,7 +63,7 @@ class UploadPicBox(Gtk.Window):
         scroll.set_shadow_type(Gtk.ShadowType.IN)
         scroll.add(self.update_text)
         
-        updatebox = Gtk.HBox()
+        updatebox = Gtk.HBox.new(False, 0)
         updatebox.pack_start(scroll, True, True, 3)
         
         self.btn_clr = Gtk.Button()
@@ -79,7 +79,7 @@ class UploadPicBox(Gtk.Window):
         self.btn_upd = Gtk.Button(_('Upload'))
         self.btn_upd.set_tooltip_text(_('Update your status') + ' (Ctrl+T)')
         
-        top = Gtk.HBox()
+        top = Gtk.HBox.new(False, 0)
         top.pack_start(self.label, True, True, 5)
         top.pack_start(self.num_chars, False, False, 5)
         
@@ -89,7 +89,7 @@ class UploadPicBox(Gtk.Window):
         error_align = Gtk.Alignment.new(0, 0, 0, 0)
         error_align.add(self.lblerror)
         
-        buttonbox = Gtk.HBox()
+        buttonbox = Gtk.HBox.new(False, 0)
         buttonbox.pack_start(self.btn_frn, False, False, 0)
         buttonbox.pack_start(self.btn_clr, False, False, 0)
         buttonbox.pack_start(Gtk.HSeparator(), False, False, 2)
@@ -97,12 +97,12 @@ class UploadPicBox(Gtk.Window):
         abuttonbox = Gtk.Alignment.new(1, 0.5, 0, 0)
         abuttonbox.add(buttonbox)
         
-        bottom = Gtk.HBox()
+        bottom = Gtk.HBox.new(False, 0)
         bottom.pack_start(self.waiting, False, False, 5)
         bottom.pack_start(error_align, True, True, 4)
         #bottom.pack_start(abuttonbox, True, True, 5)
         
-        vbox = Gtk.VBox()
+        vbox = Gtk.VBox.new(False, 0)
         vbox.pack_start(pic_box, False, False, 2)
         vbox.pack_start(top, False, False, 2)
         vbox.pack_start(updatebox, True, True, 2)

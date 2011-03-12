@@ -53,7 +53,7 @@ class TweetListWebkit(Gtk.VBox):
         align = Gtk.Alignment.new(xalign=1, yalign=0.5)
         align.add(self.waiting)
         
-        bottombox = Gtk.HBox(False)
+        bottombox = Gtk.HBox.new(False, 0)
         bottombox.pack_start(self.lblerror, False, False, 2)
         bottombox.pack_start(align, True, True, 2)
         

@@ -51,7 +51,7 @@ class Dock(Gtk.Alignment):
         self.btn_settings.connect('clicked', self.mainwin.show_preferences)
         self.btn_about.connect('clicked', self.__show_about)
         
-        box = Gtk.HBox()
+        box = Gtk.HBox.new(False, 0)
         box.pack_start(self.btn_home, False, False, 0)
         box.pack_start(self.btn_profile, False, False, 0)
         box.pack_start(self.btn_follow, False, False, 0)

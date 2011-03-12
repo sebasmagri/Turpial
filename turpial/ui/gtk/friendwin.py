@@ -57,8 +57,8 @@ class FriendsWin(Gtk.Window):
         scroll.set_shadow_type(Gtk.ShadowType.IN)
         scroll.add(self.list)
         
-        hbox = Gtk.HBox(False)
-        hbox2 = Gtk.HBox(False)
+        hbox = Gtk.HBox.new(False, 0)
+        hbox2 = Gtk.HBox.new(False, 0)
         
         if friends is not None:
             for friend in friends:
@@ -68,20 +68,20 @@ class FriendsWin(Gtk.Window):
                 hbox.pack_start(self.entry, True, True, 2)
                 hbox2.pack_start(scroll, True, True, 2)
                 
-                vbox = Gtk.VBox(False)
+                vbox = Gtk.VBox.new(False, 0)
                 vbox.pack_start(hbox, False, False, 1)
                 vbox.pack_start(hbox2, True, True, 1)
             elif len(friends) == 0:
                 label.set_markup('<span foreground="#920d12">%s</span>' % 
                 _('What? You don\'t have any friends. Try to go out and know \
 some nice people' ))
-                vbox = Gtk.HBox(False)
+                vbox = Gtk.HBox.new(False, 0)
                 vbox.pack_start(align, True, True, 2)
         else:
             label.set_markup('<span foreground="#920d12">%s</span>' % 
             _('I am still loading all of your friends. Try again in a few \
 seconds' ))
-            vbox = Gtk.HBox(False)
+            vbox = Gtk.HBox.new(False, 0)
             vbox.pack_start(align, True, True, 2)
         
         self.add(vbox)
