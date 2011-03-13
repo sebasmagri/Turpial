@@ -14,7 +14,7 @@ try:
     from gi.repository import Notify
     NOTIFY = True
 except ImportError:
-    log.debug(_('libnotify is not installed'))
+    log.debug('libnotify is not installed')
     NOTIFY = False
 
 class Notification:
