@@ -72,15 +72,23 @@ class FriendsWin(Gtk.Window):
                 vbox.pack_start(hbox, False, False, 1)
                 vbox.pack_start(hbox2, True, True, 1)
             elif len(friends) == 0:
-                label.set_markup('<span foreground="#920d12">%s</span>' % 
-                _('What? You don\'t have any friends. Try to go out and know \
-some nice people' ))
+                label.set_markup(
+                    '<span foreground="#920d12">%s</span>' %
+                    _(
+                        'What? You don\'t have any friends.'
+                        ' Try to go out and know some nice people'
+                    )
+                )
                 vbox = Gtk.HBox.new(False, 0)
                 vbox.pack_start(align, True, True, 2)
         else:
-            label.set_markup('<span foreground="#920d12">%s</span>' % 
-            _('I am still loading all of your friends. Try again in a few \
-seconds' ))
+            label.set_markup(
+                '<span foreground="#920d12">%s</span>' %
+                _(
+                    'I am still loading all of your friends.'
+                    ' Try again in a few seconds'
+                )
+            )
             vbox = Gtk.HBox.new(False, 0)
             vbox.pack_start(align, True, True, 2)
         
