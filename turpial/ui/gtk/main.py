@@ -33,8 +33,6 @@ try:
 except:
     extend_mode = False
 
-Gdk.threads_init()
-
 log = logging.getLogger('Gtk')
 
 class Main(Gtk.Window, BaseGui):
@@ -130,7 +128,7 @@ class Main(Gtk.Window, BaseGui):
         return False
     
     def __on_change_state(self, widget, event, data=None):
-        if event.type != Gdk.window_state:
+        if event.type != Gdk.EventType.WINDOW_STATE:
             return False
         
         if event.new_window_state == Gdk.WindowState.ICONIFIED:
@@ -241,7 +239,7 @@ class Main(Gtk.Window, BaseGui):
         
     def load_avatar(self, dir, path, image=False):
         img_path = os.path.join(dir, path)
-        image = Gtk.Image.new_from_file(img_path)
+        image = GdkPixbuf.Pixbuf.new_from_file(img_path)
         if not image: return image.get_pixbuf()
         return image
     
@@ -262,7 +260,7 @@ class Main(Gtk.Window, BaseGui):
             fw = int(fh * ratio)
 
         dest = orig.scale_simple(fw, fh, GdkPixbuf.InterpType.BILINEAR)
-        dest.save(fullname, 'png')
+        dest.savev(fullname, 'png', [], [])
         
         del orig
         del dest
@@ -299,8 +297,12 @@ class Main(Gtk.Window, BaseGui):
         self.request_signout()
         
     def main_loop(self):
+        GObject.threads_init()
+        Gdk.threads_init()
+        Gdk.threads_enter()
         Gtk.main()
-        
+        Gdk.threads_leave()
+
     def show_login(self):
 
         self.mode = 1

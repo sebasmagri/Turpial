@@ -68,7 +68,7 @@ class Menu:
         return menu
     
     def __build_busy_item(self, menu, title):
-        busymenu = Gtk.MenuItem(title)
+        busymenu = Gtk.MenuItem.new_with_label(title)
         busymenu.set_sensitive(False)
         menu.append(busymenu)
         return menu
@@ -78,11 +78,11 @@ class Menu:
             re_one = "@%s " % info['user']
             re_all, mentions = util.get_reply_all(re_one, self.mainwin.me, info['msg'])
             
-            reply = Gtk.MenuItem(_('Reply'))
+            reply = Gtk.MenuItem.new_with_label(_('Reply'))
             reply.connect('activate', self.__update_box, re_one, info['uid'], info['user'])
             menu.append(reply)
             if mentions > 0:
-                reply_all = Gtk.MenuItem(_('Reply All'))
+                reply_all = Gtk.MenuItem.new_with_label(_('Reply All'))
                 reply_all.connect('activate', self.__update_box, re_all, info['uid'], info['user'])
                 menu.append(reply_all)
         return menu
@@ -90,7 +90,7 @@ class Menu:
     def __build_reply_dm_item(self, menu, info):
         if not info['own']:
             dm = "D @%s " % info['user']
-            reply = Gtk.MenuItem(_('Reply'))
+            reply = Gtk.MenuItem.new_with_label(_('Reply'))
             reply.connect('activate', self.__update_box, dm)
             menu.append(reply)
         return menu
@@ -99,12 +99,12 @@ class Menu:
         if not info['own']:
             if info['protocol'] == PROTOCOLS[0]:
                 rt = "RT @%s %s" % (info['user'], info['msg'])
-                retweet_old = Gtk.MenuItem(_('Retweet (Old)'))
-                retweet = Gtk.MenuItem(_('Retweet'))
+                retweet_old = Gtk.MenuItem.new_with_label(_('Retweet (Old)'))
+                retweet = Gtk.MenuItem.new_with_label(_('Retweet'))
             elif info['protocol'] == PROTOCOLS[1]:
                 rt = "RD @%s %s" % (info['user'], info['msg'])
-                retweet_old = Gtk.MenuItem(_('Redent (Old)'))
-                retweet = Gtk.MenuItem(_('Redent'))
+                retweet_old = Gtk.MenuItem.new_with_label(_('Redent (Old)'))
+                retweet = Gtk.MenuItem.new_with_label(_('Redent'))
             
             retweet_old.connect('activate', self.__update_box, rt)
             retweet.connect('activate', self.__retweet, info['uid'])
@@ -115,39 +115,39 @@ class Menu:
     def __build_direct_item(self, menu, info):
         if not info['own']:
             dm = "D @%s " % info['user']
-            direct = Gtk.MenuItem(_('DM'))
+            direct = Gtk.MenuItem.new_with_label(_('DM'))
             direct.connect('activate', self.__update_box, dm)
             menu.append(direct)
         return menu
         
     def __build_delete_item(self, menu, info):
         if info['own']:
-            delete = Gtk.MenuItem(_('Delete'))
+            delete = Gtk.MenuItem.new_with_label(_('Delete'))
             delete.connect('activate', self.__delete, info['uid'])
             menu.append(delete)
         return menu
         
     def __build_delete_dm_item(self, menu, info):
-        delete = Gtk.MenuItem(_('Delete'))
+        delete = Gtk.MenuItem.new_with_label(_('Delete'))
         delete.connect('activate', self.__delete_direct, info['uid'])
         menu.append(delete)
         return menu
     
     def __build_fav_item(self, menu, info):
         if info['fav']:
-            unsave = Gtk.MenuItem(_('- Fav'))
+            unsave = Gtk.MenuItem.new_with_label(_('- Fav'))
             unsave.connect('activate', self.__fav, False, info['uid'])
             menu.append(unsave)
         else:
-            save = Gtk.MenuItem(_('+ Fav'))
+            save = Gtk.MenuItem.new_with_label(_('+ Fav'))
             save.connect('activate', self.__fav, True, info['uid'])
             menu.append(save)
         return menu
     
     def __build_open_item(self, menu, info):
-        _open = Gtk.MenuItem(_('Open'))
+        _open = Gtk.MenuItem.new_with_label(_('Open'))
         
-        open_menu = Gtk.Menu()
+        open_menu = Gtk.Menu.new()
         
         total_urls = util.detect_urls(info['msg'])
         total_users = util.detect_mentions(info['msg'])
@@ -159,23 +159,23 @@ class Menu:
         
         for u in total_urls:
             url = u if len(u) < 30 else u[:30] + '...'
-            umenu = Gtk.MenuItem(url)
+            umenu = Gtk.MenuItem.new_with_label(url)
             umenu.connect('button-release-event', self.__open_url_with_event, u)
             open_menu.append(umenu)
         
         if len(total_urls) > 0 and len(total_tags) > 0: 
-            open_menu.append(Gtk.SeparatorMenuItem())
+            open_menu.append(Gtk.SeparatorMenuItem.new())
         
         for h in total_tags:
             hashtag = self.mainwin.request_hashtags_url() + h[1:]
-            hmenu = Gtk.MenuItem(h)
+            hmenu = Gtk.MenuItem.new_with_label(h)
             hmenu.connect('button-release-event',
                           self.__open_url_with_event, hashtag)
             open_menu.append(hmenu)
             
         for h in total_groups:
             hashtag = '/'.join([self.mainwin.request_groups_url(), h[1:]]) 
-            hmenu = Gtk.MenuItem(h)
+            hmenu = Gtk.MenuItem.new_with_label(h)
             hmenu.connect('button-release-event',
                           self.__open_url_with_event, hashtag)
             open_menu.append(hmenu)
@@ -190,7 +190,7 @@ class Menu:
                 continue
             exist.append(m)
             user_prof = '/'.join([self.mainwin.request_profiles_url(), m[1:]])
-            mentmenu = Gtk.MenuItem(m)
+            mentmenu = Gtk.MenuItem.new_with_label(m)
             mentmenu.connect('button-release-event', self.__open_url_with_event, user_prof)
             open_menu.append(mentmenu)
             
@@ -202,21 +202,21 @@ class Menu:
     
     def __build_in_reply_to_item(self, menu, info):
         if info['in_reply_id']:
-            in_reply = Gtk.MenuItem(_('In reply to'))
+            in_reply = Gtk.MenuItem.new_with_label(_('In reply to'))
             in_reply.connect('activate', self.__in_reply_to, info['user'], info['in_reply_id'])
             menu.append(in_reply)
         return menu
         
     def __build_profile_item(self, menu, info):
         user_profile = '/'.join([self.mainwin.request_profiles_url(), info['user']])
-        usermenu = Gtk.MenuItem('@' + info['user'])
+        usermenu = Gtk.MenuItem.new_with_label('@' + info['user'])
         usermenu.connect('activate', self.__open_url, user_profile)
         menu.append(usermenu)
         return menu
         
     def __build_mute_item(self, menu, info):
         if info.has_key('friend') and info['friend'] and not info['own']: 
-            mute = Gtk.MenuItem(_('Mute'))
+            mute = Gtk.MenuItem.new_with_label(_('Mute'))
             mute.connect('activate', self.__mute, info['user'])
             menu.append(mute)
         return menu
@@ -224,13 +224,13 @@ class Menu:
     def __build_follow_item(self, menu, info):
         if not info['own']:
             if not info.has_key('friend'):
-                follow = Gtk.MenuItem(_('Loading friends...'))
+                follow = Gtk.MenuItem.new_with_label(_('Loading friends...'))
                 follow.set_sensitive(False)
             elif info['friend'] is False:
-                follow = Gtk.MenuItem(_('Follow'))
+                follow = Gtk.MenuItem.new_with_label(_('Follow'))
                 follow.connect('activate', self.__follow, True, info['user'])
             elif info['friend'] is True:
-                follow = Gtk.MenuItem(_('Unfollow'))
+                follow = Gtk.MenuItem.new_with_label(_('Unfollow'))
                 follow.connect('activate', self.__follow, False, info['user'])
             menu.append(follow)
         return menu

@@ -15,6 +15,10 @@ log = logging.getLogger('Gtk:Statuslist')
 
 FIELDS = 16
 
+def safe_replace(target, oldstring, newstring):
+    oldstring, newstring = map(str, (oldstring, newstring))
+    return target.replace(oldstring, newstring)
+
 class StatusList(Gtk.ScrolledWindow):
     def __init__(self, mainwin):
         GObject.GObject.__init__(self)
@@ -24,13 +28,6 @@ class StatusList(Gtk.ScrolledWindow):
         self.last = None    # Last tweets updated
         self.mainwin = mainwin
         self.popup_menu = Menu(mainwin)
-        
-        self.list = Gtk.TreeView()
-        self.list.set_headers_visible(False)
-        self.list.set_events(Gdk.EventMask.POINTER_MOTION_MASK)
-        self.list.set_level_indentation(0)
-        #self.list.set_rules_hint(True)
-        self.list.set_resize_mode(Gtk.ResizeMode.IMMEDIATE)
         
         self.model = Gtk.ListStore(
             GdkPixbuf.Pixbuf, # avatar
@@ -53,27 +50,34 @@ class StatusList(Gtk.ScrolledWindow):
         ) # Editar FIELDS
         
         self.model.set_sort_column_id(16, Gtk.SortType.DESCENDING)
-        self.list.set_model(self.model)
-        cell_avatar = Gtk.CellRendererPixbuf()
+
+        self.list = Gtk.TreeView.new_with_model(self.model)
+        self.list.set_headers_visible(False)
+        self.list.set_events(Gdk.EventMask.POINTER_MOTION_MASK)
+        self.list.set_level_indentation(0)
+        self.list.set_resize_mode(Gtk.ResizeMode.IMMEDIATE)
+
+        cell_avatar = Gtk.CellRendererPixbuf.new()
         cell_avatar.set_property('yalign', 0)
-        self.cell_tweet = Gtk.CellRendererText()
+
+        self.cell_tweet = Gtk.CellRendererText.new()
         self.cell_tweet.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
         self.cell_tweet.set_property('wrap-width', 260)
         self.cell_tweet.set_property('yalign', 0)
         self.cell_tweet.set_property('xalign', 0)
         
-        column = Gtk.TreeViewColumn('tweets')
+        column = Gtk.TreeViewColumn.new()
+        column.set_title('tweets')
         column.set_alignment(0.0)
         column.pack_start(cell_avatar, False)
         column.pack_start(self.cell_tweet, True)
-        # column.set_properties(self.cell_tweet, markup=4, cell_background_gdk=11)
-        # column.set_properties(cell_avatar, pixbuf=0, cell_background_gdk=11)
+
         self.list.append_column(column)
         self.list.connect("button-release-event", self.__on_click)
         self.click_handler = self.list.connect("cursor-changed", self.__on_select)
-            
+
         self.add(self.list)
-        
+
     def __highlight_hashtags(self, text):
         hashtags = util.detect_hashtags(text)
         if len(hashtags) == 0: return text
@@ -84,7 +88,7 @@ class StatusList(Gtk.ScrolledWindow):
                 cad = '<span foreground="%s">%s</span>' % (
                     self.mainwin.link_color, h
                 )
-                text = text.replace(torep, cad)
+                text = safe_replace(text, torep, cad)
             except:
                 log.debug('Problemas para resaltar el hashtag: %s' % h)
         return text
@@ -102,7 +106,7 @@ class StatusList(Gtk.ScrolledWindow):
                 cad = '<span foreground="%s">%s</span>' % (
                     self.mainwin.link_color, h
                 )
-                text = text.replace(torep, cad)
+                text = safe_replace(text, torep, cad)
             except:
                 log.debug('Problemas para resaltar el grupo: %s' % h)
         return text
@@ -119,17 +123,16 @@ class StatusList(Gtk.ScrolledWindow):
             cad = '<span foreground="%s">%s</span>' % (
                 self.mainwin.link_color, h
             )
-            text = text.replace(torep, cad)
+            text = safe_replace(text, torep, cad)
         return text
         
     def __highlight_urls(self, urls, text):
         #if len(urls) == 0: return text
-        
         for u in urls:
             cad = '<span foreground="%s">%s</span>' % (
                 self.mainwin.link_color, u
             )
-            text = text.replace(u, cad)
+            text = safe_replace(text, u, cad)
         return text
         
     def __on_select(self, widget):
@@ -161,7 +164,7 @@ class StatusList(Gtk.ScrolledWindow):
         menu = self.popup_menu.build(uid, user, msg, in_reply_to_id, utype, 
             protocol, own)
         menu.show_all()
-        menu.popup(None, None, None, event.button , event.time)
+        menu.popup(None, None, None, None, event.button, event.time)
     
     def __get_background_color(self, fav, own, msg, new):
         ''' Returns the bg color for an update according it status '''
@@ -197,12 +200,12 @@ class StatusList(Gtk.ScrolledWindow):
     def __build_pango_text(self, status):
         ''' Transform the regular text into pango markup '''
         urls = [
-            Gobject.markup_escape_text(u)
+            GObject.markup_escape_text(u.encode('utf-8'))
             for u in util.detect_urls(status.text)
         ]
-        
+
         pango_twt = util.unescape_text(status.text)
-        pango_twt = GObject.markup_escape_text(pango_twt)
+        pango_twt = GObject.markup_escape_text(pango_twt.encode('utf-8'))
         
         user = '<span size="9000" foreground="%s"><b>%s</b></span> ' % (
             self.mainwin.link_color, status.username

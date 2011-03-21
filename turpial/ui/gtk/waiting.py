@@ -12,9 +12,7 @@ class CairoWaiting(Gtk.Spinner):
         GObject.GObject.__init__(self)
 
     def start(self):
-        self.show()
         super(CairoWaiting, self).start()
 
     def stop(self, *args, **kwargs):
         super(CairoWaiting, self).stop()
-        self.hide()
