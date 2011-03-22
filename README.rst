@@ -28,7 +28,7 @@ Turpial necesita los siguientes paquetes para funcionar correctamente:
  * ``python-simplejson >= 1.9.2``
  * ``python-gtk2 >= 2.12``
  * ``python-notify >= 0.1.1``
- * ``python-pygame >= 1.7``
+ * ``python-gst0.10``
  * ``python-pybabel >= 0.9.1``
  * ``python-gtkspell >= 2.25.3``
  * ``python-webkit``
@@ -43,7 +43,8 @@ comando (como superusuario)::
     # aptitude install python-simplejson \
                        python-gtk2 \
                        python-notify \
-                       python-pygame \
+		       python-gst0.10 \
+		       gstreamer0.10-plugins-base \
                        python-pybabel \
                        python-gtkspell \
                        python-webkit \
@@ -55,7 +56,8 @@ o si dispone de ``sudo``::
     $ sudo aptitude install python-simplejson \
                             python-gtk2 \
                             python-notify \
-                            python-pygame \
+			    python-gst0.10 \
+		       	    gstreamer0.10-plugins-base \
                             python-pybabel \
                             python-gtkspell \
                             python-webkit \
@@ -105,6 +107,7 @@ Puedes ponerte en contacto con el equipo de Turpial a través de cualquiera de
 las siguientes direcciones (todas @gmail.com):
 
  * wil.alejandro
+ * meza.eleazar
  * milmazz
  * kstnshadows
  * petrizzo
@@ -112,6 +115,7 @@ las siguientes direcciones (todas @gmail.com):
 A través de Twitter:
 
  * [@satanas82](http://twitter.com/satanas82)
+ * [@shaka](http://twitter.com/shaka)
  * [@milmazz](http://twitter.com/milmazz)
  * [@Azrael37](http://twitter.com/Azrael37)
  * [@petrizzo](http://twitter.com/petrizzo)
