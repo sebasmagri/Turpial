@@ -10,15 +10,21 @@ import logging
 import platform
 import traceback
 
-import pygst
-pygst.require('0.10')
-import gst
+try:
+    import pygst
+    pygst.require('0.10')
+    import gst
+    GST = True
+except:
+    GST = False
 
 class Sound:
     def __init__(self, disable):
         self.sound = False
         self.log = logging.getLogger('Sound')
-        self.disable = disable
+        if not GST:
+            self.log.debug('GStreamer no disponible')
+        self.disable = disable or not GST
         if self.disable:
             self.log.debug('Módulo deshabilitado')
             return
@@ -39,6 +45,8 @@ class Sound:
             self.sound = False
 
     def on_message(self, bus, message):
+        if self.disable:
+            return
         t = message.type
         if t == gst.MESSAGE_EOS:
             self.player.set_state(gst.STATE_NULL)
