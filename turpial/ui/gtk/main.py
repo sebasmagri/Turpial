@@ -12,6 +12,8 @@ import logging
 import gobject
 import webbrowser
 
+from functools import wraps
+
 from turpial.ui.gtk.updatebox import UpdateBox
 from turpial.ui.gtk.uploadpicbox import UploadPicBox
 from turpial.ui.gtk.conversation import ConversationBox
@@ -33,9 +35,21 @@ except:
     extend_mode = False
 
 gtk.gdk.set_program_class("Turpial")
-gtk.gdk.threads_init()
 
 log = logging.getLogger('Gtk')
+
+def gtk_threaded(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        def inner(*args, **kwargs):
+            gtk.gdk.threads_enter()
+            try:
+                fn(*args, **kwargs)
+            finally:
+                gtk.gdk.threads_leave()
+        gobject.idle_add(inner, *args, **kwargs)
+        return inner
+    return wrapper
 
 class Main(BaseGui, gtk.Window):
     __gsignals__ = dict(mykeypress=(gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION, None, (str,)))
@@ -70,6 +84,11 @@ class Main(BaseGui, gtk.Window):
         self.win_state = 'windowed'
         self.minimize = 'on'
         self.workspace = 'single'
+        self.win_visibility = True
+        self.single_win_size = (320, 480)
+        self.wide_win_size = (800, 480)
+        self.win_single_pos = (-1, -1)
+        self.win_wide_pos = (-1, -1)
         self.link_color = '#ff6633'
         self.home_interval = -1
         self.replies_interval = -1
@@ -307,6 +326,7 @@ class Main(BaseGui, gtk.Window):
         self.request_signout()
         
     def main_loop(self):
+        gobject.threads_init()
         gtk.main()
         
     def show_login(self):
@@ -321,14 +341,14 @@ class Main(BaseGui, gtk.Window):
         
     def cancel_login(self, error):
         self.vbox.cancel_login(error)
-        
+
+    @gtk_threaded
     def show_main(self, config, global_cfg, p):
         log.debug('Cargando ventana principal')
         self.mode = 2
         
-        self.update_config(config, global_cfg, True)
-        
-        gtk.gdk.threads_enter()
+        self.update_config(config, global_cfg)
+
         self.contentbox.add(self.contenido)
         
         self.statusbar = gtk.Statusbar()
@@ -365,7 +385,6 @@ class Main(BaseGui, gtk.Window):
         
         #if (self.win_pos[0] > 0 and self.win_pos[1] > 0):
         #    self.move(self.win_pos[0], self.win_pos[1])
-        gtk.gdk.threads_leave()
         
         if config.read('Notifications', 'login') == 'on':
             self.notify.login(p.items)
@@ -423,9 +442,9 @@ class Main(BaseGui, gtk.Window):
         
     def start_search(self):
         self.profile.search.start_update()
-        
+
+    @gtk_threaded
     def update_column1(self, tweets):
-        gtk.gdk.threads_enter()
         
         last = self.home.timeline.statuslist.last
         count = self.home.timeline.update_tweets(tweets)
@@ -436,12 +455,10 @@ class Main(BaseGui, gtk.Window):
         if self.updating[0] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
             
-        gtk.gdk.threads_leave()
         self.updating[0] = False
-        
+
+    @gtk_threaded
     def update_column2(self, tweets):
-        gtk.gdk.threads_enter()
-        
         last = self.home.replies.statuslist.last
         count = self.home.replies.update_tweets(tweets)
         column = self.request_viewed_columns()[1]
@@ -450,13 +467,11 @@ class Main(BaseGui, gtk.Window):
         log.debug(u'Actualizando %s' % column.title)
         if self.updating[1] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
-        
-        gtk.gdk.threads_leave()
+
         self.updating[1] = False
-        
+
+    @gtk_threaded
     def update_column3(self, tweets):
-        gtk.gdk.threads_enter()
-        
         last = self.home.direct.statuslist.last
         count = self.home.direct.update_tweets(tweets)
         column = self.request_viewed_columns()[2]
@@ -466,37 +481,32 @@ class Main(BaseGui, gtk.Window):
         if self.updating[2] and show_notif == 'on':
             self._notify_new_tweets(column, tweets, last, count)
             
-        gtk.gdk.threads_leave()
         self.updating[2] = False
-        
+
+    @gtk_threaded
     def update_favorites(self, favs):
         log.debug(u'Actualizando favoritos')
-        gtk.gdk.threads_enter()
         #self.home.timeline.update_tweets(tweets)
         #self.home.replies.update_tweets(replies)
         self.profile.favorites.update_tweets(favs)
-        gtk.gdk.threads_leave()
-        
+
+    #gtk_threaded
     def update_user_profile(self, profile):
         log.debug(u'Actualizando perfil del usuario')
-        gtk.gdk.threads_enter()
         self.profile.set_user_profile(profile)
-        gtk.gdk.threads_leave()
         
     def update_follow(self, user, follow):
         self.notify.following(user, follow)
-        
+
+    @gtk_threaded
     def update_rate_limits(self, val):
         if val is None or val == []: return
-        gtk.gdk.threads_enter()
         self.statusbar.push(0, util.get_rates(val))
-        gtk.gdk.threads_leave()
-        
+
+    @gtk_threaded
     def update_search(self, val):
         log.debug(u'Mostrando resultados de la búsqueda')
-        gtk.gdk.threads_enter()
         self.profile.search.update_tweets(val)
-        gtk.gdk.threads_leave()
         
     def update_user_avatar(self, user, pic):
         self.home.timeline.update_user_pic(user, pic)
@@ -505,31 +515,28 @@ class Main(BaseGui, gtk.Window):
         self.profile.favorites.update_user_pic(user, pic)
         self.profile.user_form.update_user_pic(user, pic)
         self.profile.search.update_user_pic(user, pic)
-        
+
+    @gtk_threaded
     def update_in_reply_to(self, tweet):
-        gtk.gdk.threads_enter()
         self.replybox.update([tweet])
-        gtk.gdk.threads_leave()
-        
+
+    @gtk_threaded
     def update_conversation(self, tweets):
-        gtk.gdk.threads_enter()
         self.replybox.update(tweets)
-        gtk.gdk.threads_leave()
-        
+
+    @gtk_threaded
     def tweet_changed(self, timeline, replies, favs):
         log.debug(u'Tweet modificado')
-        gtk.gdk.threads_enter()
         log.debug(u'--Actualizando el timeline')
         self.home.timeline.update_tweets(timeline)
         log.debug(u'--Actualizando las replies')
         self.home.replies.update_tweets(replies)
         log.debug(u'--Actualizando favoritos')
         self.profile.favorites.update_tweets(favs)
-        gtk.gdk.threads_leave()
-        
+
+    @gtk_threaded
     def tweet_done(self, tweets):
         log.debug(u'Actualizando nuevo tweet')
-        gtk.gdk.threads_enter()
         if tweets.type == 'status':
             if self.updatebox.get_property('visible'):
                 self.updatebox.release()
@@ -542,7 +549,6 @@ class Main(BaseGui, gtk.Window):
                 self.updatebox.release(tweets.errmsg)
             if self.uploadpic.get_property('visible'):
                 self.uploadpic.release()
-        gtk.gdk.threads_leave()
         
         self.update_timeline(tweets)
         
@@ -578,32 +584,30 @@ class Main(BaseGui, gtk.Window):
         self.home.change_mode(self.workspace)
         self.home.update_wrap(cur_w, self.workspace)
         self.profile.change_mode(self.workspace)
-        
-    def update_config(self, config, global_cfg=None, thread=False):
+
+    @gtk_threaded
+    def update_config(self, config, global_cfg=None):
         log.debug('Actualizando configuracion')
         self.minimize = config.read('General', 'minimize-on-close')
         home_interval = int(config.read('General', 'home-update-interval'))
         replies_interval = int(config.read('General', 'replies-update-interval'))
         directs_interval = int(config.read('General', 'directs-update-interval'))
-        
-        if thread: 
-            self.version = global_cfg.read('App', 'version')
-            self.imgdir = config.imgdir
-            single_size = config.read('Window', 'single-win-size').split(',')
-            wide_size = config.read('Window', 'wide-win-size').split(',')
-            s_pos = config.read('Window', 'window-single-position').split(',')
-            w_pos = config.read('Window', 'window-wide-position').split(',')
-            self.win_state = config.read('Window', 'window-state')
-            self.win_visibility = config.read('Window', 'window-visibility')
-            self.single_win_size = (int(single_size[0]), int(single_size[1]))
-            self.wide_win_size = (int(wide_size[0]), int(wide_size[1]))
-            self.win_single_pos = (int(s_pos[0]), int(s_pos[1]))
-            self.win_wide_pos = (int(w_pos[0]), int(w_pos[1]))
-            gtk.gdk.threads_enter()
-        
+
+        self.version = global_cfg.read('App', 'version')
+        self.imgdir = config.imgdir
+        single_size = config.read('Window', 'single-win-size').split(',')
+        wide_size = config.read('Window', 'wide-win-size').split(',')
+        s_pos = config.read('Window', 'window-single-position').split(',')
+        w_pos = config.read('Window', 'window-wide-position').split(',')
+        self.win_state = config.read('Window', 'window-state')
+        self.win_visibility = config.read('Window', 'window-visibility')
+        self.single_win_size = (int(single_size[0]), int(single_size[1]))
+        self.wide_win_size = (int(wide_size[0]), int(wide_size[1]))
+        self.win_single_pos = (int(s_pos[0]), int(s_pos[1]))
+        self.win_wide_pos = (int(w_pos[0]), int(w_pos[1]))
         if self.workspace <> config.read('General', 'workspace'):
             self.workspace = config.read('General', 'workspace')
-        
+
         self.set_mode()
         
         if (self.home_interval != home_interval):
@@ -623,9 +627,6 @@ class Main(BaseGui, gtk.Window):
             self.directs_interval = directs_interval
             self.directs_timer = gobject.timeout_add(self.directs_interval * 60 * 1000, self.download_column3)
             log.debug('--Creado timer de Directs cada %i min' % self.directs_interval)
-            
-        if thread: 
-            gtk.gdk.threads_leave()
         
     def size_request(self, widget, event, data=None):
         """Callback when the window changes its sizes. We use it to set the
