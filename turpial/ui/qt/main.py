@@ -618,7 +618,12 @@ class Main(Base, QWidget):
         self.queue_dialog.update()
 
     def on_exception(self, exception):
-        print 'Exception', exception
+        QMessageBox.critical(
+            self,
+            'An error ocurred',
+            str(exception),
+            QMessageBox.Ok
+        )
 
     # ------------------------------------------------------------
     # Timer Methods
@@ -645,6 +650,7 @@ class Main(Base, QWidget):
 
         last_id = self._container.start_updating(column.id_)
         self.core.get_column_statuses(column, last_id)
+        self._container.stop_updating(column.id_)
         return True
 
     def set_queue_timer(self):
