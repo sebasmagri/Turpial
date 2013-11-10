@@ -5,13 +5,13 @@
 import os
 import Queue
 
-from PyQt4.QtCore import QThread
-from PyQt4.QtCore import pyqtSignal
+from PyQt4.QtCore import QThread, pyqtSignal
 
 from libturpial.api.core import Core
 from libturpial.api.models.status import Status
 from libturpial.api.models.column import Column
 from libturpial.common.tools import get_account_id_from, get_column_slug_from
+
 
 class CoreWorker(QThread):
 
@@ -52,11 +52,19 @@ class CoreWorker(QThread):
 
     def __init__(self):
         QThread.__init__(self)
+
+    def start(self):
         self.queue = Queue.Queue()
         self.exit_ = False
-        self.core = Core()
+        try:
+            self.core = Core()
+        except Exception, e:
+            self.core = None
+            self.exception_raised.emit(e)
 
         self.queue_path = os.path.join(self.core.config.basedir, 'queue')
+
+        super(CoreWorker, self).start()
 
     #def __del__(self):
     #    self.wait()
